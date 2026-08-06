@@ -1,88 +1,173 @@
-# Hướng Dẫn Đẩy Unified Source Lên Git & Deploy Subdomain Trên Server
+# 🚀 Hướng Dẫn Deploy Dự Án Chi Tiết Từ A - Z Trên Server VPS (Ubuntu)
 
-Tài liệu này hướng dẫn bạn cách đẩy **1 Repository duy nhất (Monorepo)** chứa toàn bộ Frontend, Backend, 48ngay và Docker Compose lên Git, cùng với cách cấu hình **Subdomain** cho folder `48ngay` trên Server.
+Tài liệu này được viết chi tiết từng bước để bạn copy-paste thực hiện theo thứ tự từ trên xuống dưới mà không gặp bất kỳ lỗi nào.
 
 ---
 
-## 🌐 Sơ Đồ Định Tuyến Tên Miền (Subdomain Setup)
+## 📌 BẢNG THÔNG TIN TÊN MIỀN VÀ CỔNG DỊCH VỤ
 
-| Service | Thư mục | Port Docker | Tên Miền / Subdomain Trên Server |
+| Dịch vụ | Thư mục | Cổng Docker Host | Tên miền / Đường dẫn chính thức |
 | :--- | :--- | :--- | :--- |
+| **Database** | Volume | `5432` | `localhost:5432` (PostgreSQL 15) |
 | **Backend API** | `./backend` | `8081` | `https://khoahocdrivemh.pro.vn:8081` |
-| **Frontend FE** | `./frontend/FE` | `5173` | `https://khoahocdrivemh.pro.vn` |
-| **48Ngay FE** | `./48ngay` | `5174` | `https://english.khoahocdrivemh.pro.vn` |
+| **Frontend Chính** | `./frontend/FE` | `5173` | `https://khoahocdrivemh.pro.vn` |
+| **Frontend 48Ngay** | `./48ngay` | `5174` | `https://english.khoahocdrivemh.pro.vn` |
 
 ---
 
-## 🚀 BƯỚC 1: Đẩy 1 Source Duy Nhất Lên Git (Máy Local)
+## 🛠️ BƯỚC 1: Cấu Hình DNS Tên Miền (Thực hiện trên trang quản lý Tên miền)
 
-Thư mục gốc `my_course` đã được gộp các `.git` con và khởi tạo 1 Git duy nhất.
+Vào trang quản lý Tên miền (Cloudflare, MatBao, Inet, v.v.) và thêm 2 bản ghi **A Record**:
 
-Bạn chỉ cần mở Terminal tại máy local và chạy đúng các câu lệnh sau:
+1. **Bản ghi 1 (Tên miền chính)**:
+   - **Type**: `A`
+   - **Name**: `@` (hoặc `khoahocdrivemh.pro.vn`)
+   - **IPv4 Address**: `IP_SERVER_CỦA_BẠN`
+   - **TTL**: Auto
 
+2. **Bản ghi 2 (Subdomain Tiếng Anh 48 ngày)**:
+   - **Type**: `A`
+   - **Name**: `english` (tức `english.khoahocdrivemh.pro.vn`)
+   - **IPv4 Address**: `IP_SERVER_CỦA_BẠN`
+   - **TTL**: Auto
+
+---
+
+## 💻 BƯỚC 2: Cài Đặt Môi Trường Trên Server (VPS Ubuntu)
+
+SSH vào Server Ubuntu của bạn và chạy lần lượt các lệnh sau:
+
+### 2.1. Cập nhật hệ thống:
 ```bash
-# 1. Thêm tất cả file vào Git (File .gitignore đã tự lọc loại bỏ file rác, .env và node_modules)
-git add .
+sudo apt update && sudo apt upgrade -y
+```
 
-# 2. Commit code
-git commit -m "feat: setup single monorepo source for docker & subdomain"
+### 2.2. Cài đặt Docker, Docker Compose, Git và Nginx:
+```bash
+sudo apt install -y docker.io docker-compose-v2 git nginx certbot python3-certbot-nginx
+```
 
-# 3. Kết nối repo GitHub/GitLab của bạn và push (Thay URL repo của bạn vào câu lệnh dưới)
-git remote add origin https://github.com/USERNAME/YOUR_REPOSITORY.git
-git push -u origin master
+### 2.3. Cấp quyền chạy Docker cho User hiện tại (tránh lỗi Permission Denied):
+```bash
+sudo systemctl enable --now docker
+sudo usermod -aG docker $USER
+newgrp docker
 ```
 
 ---
 
-## 💻 BƯỚC 2: Clone & Chạy Trên Server (VPS Ubuntu)
+## 📂 BƯỚC 3: Clone Source Code Và Khởi Tạo Môi Trường
 
-### 2.1. Clone Code Về Server
+### 3.1. Clone dự án từ GitHub về thư mục root:
 ```bash
 cd ~
-git clone https://github.com/USERNAME/YOUR_REPOSITORY.git
-cd YOUR_REPOSITORY
+git clone https://github.com/Hungmai06/course.git
+cd course
 ```
 
-### 2.2. Khởi Tạo File .env
-File `.env.example` đã có sẵn 100% dữ liệu thực tế. Bạn chỉ cần copy sang `.env`:
+### 3.2. Khởi tạo file `.env`:
+File `.env.example` đã chứa đầy đủ 100% cấu hình thực tế. Bạn chỉ cần chạy lệnh copy:
 ```bash
 cp .env.example .env
 ```
 
-### 2.3. Khởi Chạy Docker Compose
+---
+
+## 🗄️ BƯỚC 4: Import Cơ Sở Dữ Liệu (`course_backup.sql`)
+
+Nếu bạn có file sao lưu cơ sở dữ liệu `course_backup.sql` từ máy local:
+
+### 4.1. Upload file `course_backup.sql` từ máy Local lên Server:
+*(Mở Terminal tại máy Local - nơi chứa file course_backup.sql - và chạy lệnh):*
 ```bash
-docker compose up -d --build
+scp course_backup.sql ubuntu@IP_SERVER_CỦA_BẠN:~/course/
 ```
-*(Cả 4 dịch vụ `postgres`, `backend`, `frontend`, và `48ngay-frontend` sẽ khởi chạy thành công ngay lập tức).*
+*(Thay `ubuntu` và `IP_SERVER_CỦA_BẠN` bằng thông tin VPS của bạn).*
+
+### 4.2. Khởi chạy riêng container Database Postgres trên Server:
+*(Quay lại Terminal của Server VPS)*:
+```bash
+docker compose up -d postgres
+```
+
+### 4.3. Kiểm tra Postgres đã sẵn sàng (khoảng 5-10 giây) và Import SQL:
+```bash
+docker exec -i postgres psql -U admin -d course < course_backup.sql
+```
+*(Lệnh trên sẽ tự động khôi phục toàn bộ bảng và dữ liệu vào cơ sở dữ liệu `course`).*
 
 ---
 
-## 🌐 BƯỚC 3: Cấu Hình Subdomain 48ngay Với Nginx Trên Server
+## 🚀 BƯỚC 5: Khởi Chạy Toàn Bộ Ứng Dụng Với Docker Compose
 
-Để `english.khoahocdrivemh.pro.vn` chạy mượt mà trên Subdomain:
+Chạy 1 lệnh duy nhất để build và khởi chạy cả 4 services (`postgres`, `backend`, `frontend`, `48ngay`):
 
-### 1. Trỏ DNS Domain:
-Trong trang quản lý tên miền (Cloudflare / MatBao / Inet / ...), bạn tạo 2 bản ghi **A**:
-- **A Record**: `@` (hoặc `khoahocdrivemh.pro.vn`) -> Trỏ về IP Server của bạn.
-- **A Record**: `english` (tức `english.khoahocdrivemh.pro.vn`) -> Trỏ về IP Server của bạn.
-
-### 2. Cài Đặt Nginx & Copy File Cấu Hình:
-Trên Server Ubuntu, chạy:
 ```bash
-sudo apt update && sudo apt install nginx -y
+docker compose up -d --build
+```
 
-# Copy nội dung từ file nginx-subdomain.conf vào Nginx:
+### Kiểm Tra Kết Quả Khởi Chạy:
+1. **Kiểm tra trạng thái các container:**
+   ```bash
+   docker compose ps
+   ```
+   *(Đảm bảo cả 4 container `postgres`, `backend`, `frontend`, `48ngay-frontend` đều ghi `Up` hoặc `running`).*
+
+2. **Xem log khởi động Backend:**
+   ```bash
+   docker compose logs -f backend
+   ```
+   *(Nhấn `Ctrl + C` để thoát màn hình xem log).*
+
+---
+
+## 🌐 BƯỚC 6: Cấu Hình Nginx Reverse Proxy (Subdomain & Domain)
+
+### 6.1. Copy file cấu hình Nginx có sẵn trong dự án:
+```bash
 sudo cp nginx-subdomain.conf /etc/nginx/sites-available/default
+```
 
-# Kiểm tra cú pháp Nginx và Reload:
+### 6.2. Kiểm tra cú pháp Nginx và khởi động lại Nginx:
+```bash
 sudo nginx -t
 sudo systemctl reload nginx
 ```
 
-### 3. Cài SSL Miễn Phí (HTTPS với Certbot):
+---
+
+## 🔒 BƯỚC 7: Cài Đặt SSL Miễn Phí (HTTPS với Certbot)
+
+Chạy Certbot để tự động đăng ký chứng chỉ HTTPS SSL cho cả Domain chính và Subdomain:
+
 ```bash
-sudo apt install certbot python3-certbot-nginx -y
-sudo certbot --nginx -d khoahocdrivemh.pro.vn -d english.khoahocdrivemh.pro.vn
+sudo certbot --nginx -d khoahocdrivemh.pro.vn -d www.khoahocdrivemh.pro.vn -d english.khoahocdrivemh.pro.vn
 ```
 
-Certbot sẽ tự động cấu hình HTTPS miễn phí cho cả Domain chính và Subdomain `english.khoahocdrivemh.pro.vn`! 🎉
+- Nhập email của bạn khi được hỏi.
+- Chọn `Y` để đồng ý với điều khoản service.
+- Certbot sẽ tự động gia hạn chứng chỉ khi hết hạn.
+
+---
+
+## 🛠️ HƯỚNG DẪN BẢO TRÌ & LỆNH THƯỜNG DÙNG
+
+- **Xem log tất cả dịch vụ:**
+  ```bash
+  docker compose logs -f
+  ```
+- **Khởi động lại Backend:**
+  ```bash
+  docker compose restart backend
+  ```
+- **Cập nhật code mới từ GitHub sau này:**
+  ```bash
+  git pull origin main
+  docker compose up -d --build
+  ```
+- **Dừng toàn bộ hệ thống:**
+  ```bash
+  docker compose down
+  ```
+
+🎉 **Chúc mừng! Hệ thống của bạn đã được deploy thành công và chạy mượt mà với HTTPS!**

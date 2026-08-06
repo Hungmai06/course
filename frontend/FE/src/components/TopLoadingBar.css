@@ -1,0 +1,18 @@
+.top-loading-bar {
+  position: fixed;
+  top: 0;
+  left: 0;
+  height: 3px;
+  z-index: 99999;
+  background: linear-gradient(90deg, #009EFF, #00d4ff, #0078D4);
+  background-size: 200% 100%;
+  animation: barShimmer 1s linear infinite;
+  transition: width 0.15s ease, opacity 0.4s ease;
+  border-radius: 0 2px 2px 0;
+  box-shadow: 0 0 8px rgba(0, 158, 255, 0.7);
+}
+
+@keyframes barShimmer {
+  0%   { background-position: 200% 0; }
+  100% { background-position: -200% 0; }
+}

@@ -1,0 +1,338 @@
+.redirect-container {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  min-height: 100vh;
+  background: radial-gradient(circle at center, #ffffff 0%, #f4f6f8 100%);
+  font-family: 'Inter', system-ui, -apple-system, sans-serif;
+  color: #1f2937;
+  padding: 20px;
+}
+
+.redirect-card {
+  background: #ffffff;
+  border: 1px solid rgba(229, 231, 235, 0.8);
+  border-radius: 20px;
+  padding: 30px;
+  width: 100%;
+  max-width: 680px;
+  box-shadow: 0 20px 40px -15px rgba(0, 0, 0, 0.08);
+  position: relative;
+  overflow: hidden;
+}
+
+/* Mall Badge Header */
+.mall-badge-header {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  margin-bottom: 24px;
+  border-bottom: 1px solid #f3f4f6;
+  padding-bottom: 12px;
+}
+
+.shopee-mall-tag {
+  background-color: #d0011b;
+  color: #ffffff;
+  font-size: 0.75rem;
+  font-weight: 800;
+  padding: 2px 6px;
+  border-radius: 3px;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+}
+
+.partner-tag {
+  color: #9ca3af;
+  font-size: 0.75rem;
+  font-weight: 600;
+  letter-spacing: 1px;
+}
+
+/* Content Layout split */
+.book-preview-content {
+  display: grid;
+  grid-template-columns: 180px 1fr;
+  gap: 30px;
+  align-items: start;
+}
+
+@media (max-width: 600px) {
+  .book-preview-content {
+    grid-template-columns: 1fr;
+    gap: 20px;
+  }
+  .book-cover-container {
+    margin: 0 auto;
+  }
+}
+
+/* Book Cover Mockup */
+.book-cover-container {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  position: relative;
+}
+
+.book-cover {
+  width: 170px;
+  height: 240px;
+  background: linear-gradient(135deg, #1e3a8a 0%, #3b82f6 100%);
+  border-radius: 8px 16px 16px 8px;
+  box-shadow: 5px 10px 20px rgba(0, 0, 0, 0.15);
+  padding: 20px 15px;
+  color: #ffffff;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: space-between;
+  text-align: center;
+  border-left: 5px solid rgba(255, 255, 255, 0.2);
+  position: relative;
+  overflow: hidden;
+}
+
+.book-cover::after {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background: linear-gradient(90deg, rgba(255, 255, 255, 0.15) 0%, rgba(255, 255, 255, 0) 10%, rgba(0, 0, 0, 0.05) 50%, rgba(255, 255, 255, 0.1) 100%);
+  pointer-events: none;
+}
+
+.book-brand {
+  font-size: 1.2rem;
+  font-weight: 800;
+  letter-spacing: 2px;
+  border-bottom: 2px solid #ffffff;
+  padding-bottom: 4px;
+}
+
+.book-tag {
+  font-size: 0.6rem;
+  font-weight: 700;
+  background: rgba(255, 255, 255, 0.2);
+  padding: 3px 8px;
+  border-radius: 4px;
+  margin-top: 10px;
+  letter-spacing: 0.5px;
+}
+
+.book-title-main {
+  font-size: 1.4rem;
+  font-weight: 800;
+  margin-top: 15px;
+  letter-spacing: 1px;
+}
+
+.book-title-sub {
+  font-size: 0.75rem;
+  font-weight: 600;
+  opacity: 0.9;
+  margin-top: 2px;
+}
+
+.book-level {
+  font-size: 0.8rem;
+  font-weight: 700;
+  background-color: #f59e0b;
+  color: #1e3a8a;
+  padding: 2px 10px;
+  border-radius: 99px;
+  margin-top: 8px;
+}
+
+.book-badge {
+  font-size: 0.6rem;
+  font-weight: 700;
+  color: #ffffff;
+  margin-top: auto;
+  border-top: 1px solid rgba(255, 255, 255, 0.3);
+  width: 100%;
+  padding-top: 10px;
+}
+
+/* Info Column */
+.book-info-container {
+  display: flex;
+  flex-direction: column;
+}
+
+.book-title {
+  font-size: 1.25rem;
+  font-weight: 700;
+  color: #111827;
+  line-height: 1.4;
+  margin: 0 0 10px 0;
+}
+
+.rating-row {
+  display: flex;
+  align-items: center;
+  flex-wrap: wrap;
+  gap: 8px;
+  font-size: 0.85rem;
+  color: #4b5563;
+  margin-bottom: 16px;
+}
+
+.stars {
+  display: flex;
+  align-items: center;
+  color: #f59e0b;
+  gap: 2px;
+}
+
+.star-icon {
+  font-size: 0.85rem;
+}
+
+.rating-score {
+  font-weight: 700;
+  color: #f59e0b;
+  margin-left: 4px;
+}
+
+.divider {
+  color: #e5e7eb;
+}
+
+.rating-count, .sold-count {
+  font-weight: 500;
+}
+
+/* Price Box */
+.price-box {
+  background-color: #fafafa;
+  border-radius: 8px;
+  padding: 12px 16px;
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  margin-bottom: 20px;
+}
+
+.price-current {
+  font-size: 1.8rem;
+  font-weight: 700;
+  color: #ee4d2d;
+}
+
+.price-original {
+  font-size: 0.95rem;
+  text-decoration: line-through;
+  color: #9ca3af;
+}
+
+.discount-badge {
+  background-color: #ee4d2d;
+  color: #ffffff;
+  font-size: 0.75rem;
+  font-weight: 700;
+  padding: 2px 6px;
+  border-radius: 4px;
+}
+
+/* Promo list */
+.promo-list {
+  list-style: none;
+  padding: 0;
+  margin: 0;
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+
+.promo-list li {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  font-size: 0.9rem;
+  color: #4b5563;
+  font-weight: 500;
+}
+
+.promo-icon {
+  color: #10b981;
+  font-size: 1rem;
+  flex-shrink: 0;
+}
+
+/* Redirecting Progress Footer */
+.redirect-footer {
+  margin-top: 30px;
+  border-top: 1px solid #f3f4f6;
+  padding-top: 20px;
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+}
+
+.redirect-status-row {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  font-size: 0.9rem;
+  color: #6b7280;
+  font-weight: 600;
+}
+
+.loading-spinner-small {
+  width: 16px;
+  height: 16px;
+  border: 2px solid #e5e7eb;
+  border-top: 2px solid #ee4d2d;
+  border-radius: 50%;
+  animation: spin 0.8s linear infinite;
+}
+
+.redirect-progress-bar {
+  width: 100%;
+  height: 4px;
+  background-color: #f3f4f6;
+  border-radius: 99px;
+  overflow: hidden;
+}
+
+.redirect-progress-fill {
+  height: 100%;
+  width: 0%;
+  background-color: #ee4d2d;
+  border-radius: 99px;
+  animation: progressFill 0.8s linear forwards;
+}
+
+.manual-redirect-btn {
+  background: linear-gradient(135deg, #ee4d2d 0%, #ff7337 100%);
+  color: #ffffff;
+  border: none;
+  border-radius: 8px;
+  padding: 12px 24px;
+  font-size: 0.95rem;
+  font-weight: 700;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  box-shadow: 0 4px 12px rgba(238, 77, 45, 0.2);
+  transition: all 0.2s ease;
+}
+
+.manual-redirect-btn:hover {
+  transform: translateY(-1px);
+  box-shadow: 0 6px 16px rgba(238, 77, 45, 0.3);
+}
+
+@keyframes spin {
+  0% { transform: rotate(0deg); }
+  100% { transform: rotate(360deg); }
+}
+
+@keyframes progressFill {
+  0% { width: 0%; }
+  100% { width: 100%; }
+}

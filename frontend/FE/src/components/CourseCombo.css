@@ -1,0 +1,272 @@
+@keyframes shimmer {
+  0% {
+    background-position: 200% 0;
+  }
+  100% {
+    background-position: -200% 0;
+  }
+}
+
+.course-list {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  gap: 24px;
+  max-width: 1400px;
+  margin: 0 auto;
+  padding: 0 20px;
+}
+
+/* ===== COMBO GRID LAYOUT ===== */
+.combo-grid-container {
+  max-width: 1400px;
+  margin: 0 auto;
+  padding: 0 20px;
+}
+
+.combo-courses-grid {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  gap: 24px;
+  margin-bottom: 24px;
+}
+
+.combo-grid-item {
+  display: flex;
+  flex-direction: column;
+  height: 100%;
+}
+
+.combo-grid-item .course-item {
+  height: 100%;
+  display: flex;
+  flex-direction: column;
+}
+
+.combo-grid-item .course-item .course-content {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+}
+
+.combo-grid-item .course-item .course-image img {
+  height: 200px;
+  object-fit: cover;
+}
+
+/* ===== INCREASE HEIGHT FOR COMBO & CATEGORY SECTIONS ===== */
+.combo-courses-grid .course-item .course-image img,
+.section-gray-bg .combo-courses-grid .course-item .course-image img {
+  height: 200px !important;
+}
+
+.combo-courses-grid .course-item .course-content,
+.section-gray-bg .combo-courses-grid .course-item .course-content {
+  padding: 14px 12px !important;
+  gap: 8px !important;
+}
+
+.combo-courses-grid .course-item .course-item-title,
+.section-gray-bg .combo-courses-grid .course-item .course-item-title {
+  font-size: 0.95rem !important;
+  margin-bottom: 10px !important;
+  line-height: 1.4;
+}
+
+.combo-courses-grid .course-item .course-author,
+.section-gray-bg .combo-courses-grid .course-item .course-author {
+  font-size: 0.85rem !important;
+  margin-bottom: 8px !important;
+}
+
+.combo-courses-grid .course-item .course-pricing,
+.section-gray-bg .combo-courses-grid .course-item .course-pricing {
+  margin-bottom: 12px !important;
+  gap: 8px !important;
+}
+
+.combo-courses-grid .course-item .old-price,
+.section-gray-bg .combo-courses-grid .course-item .old-price {
+  font-size: 13px !important;
+}
+
+.combo-courses-grid .course-item .new-price,
+.section-gray-bg .combo-courses-grid .course-item .new-price {
+  font-size: 18px !important;
+}
+
+.combo-courses-grid .course-item .buy-button,
+.section-gray-bg .combo-courses-grid .course-item .buy-button {
+  padding: 10px 14px !important;
+  font-size: 14px !important;
+  border-radius: 6px !important;
+  gap: 8px !important;
+}
+
+/* ===== LOAD MORE BUTTON ===== */
+.load-more-container {
+  display: flex;
+  justify-content: center;
+  margin-top: 24px;
+  padding-top: 16px;
+  border-top: 1px solid #e0e0e0;
+}
+
+.load-more-btn {
+  background: linear-gradient(135deg, #009EFF 0%, #0078D4 100%);
+  color: white;
+  border: none;
+  padding: 12px 40px;
+  border-radius: 8px;
+  font-size: 16px;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all 0.3s ease;
+  box-shadow: 0 4px 12px rgba(0, 158, 255, 0.3);
+}
+
+.load-more-btn:hover {
+  background: linear-gradient(135deg, #0078D4 0%, #0062b0 100%);
+  transform: translateY(-2px);
+  box-shadow: 0 6px 20px rgba(0, 158, 255, 0.4);
+}
+
+.load-more-btn:active {
+  transform: translateY(0);
+}
+
+@media (max-width: 1200px) {
+  .course-list {
+    grid-template-columns: repeat(3, 1fr);
+    gap: 18px;
+  }
+
+  .combo-courses-grid {
+    grid-template-columns: repeat(3, 1fr);
+    gap: 18px;
+  }
+}
+
+@media (max-width: 600px) {
+  .course-list {
+    grid-template-columns: repeat(2, 1fr);
+    gap: 8px;
+    padding: 0 8px;
+  }
+
+  .combo-courses-grid {
+    grid-template-columns: repeat(2, 1fr);
+    gap: 12px;
+    padding: 0 8px;
+  }
+}
+
+/* Course Container */
+.course-container {
+  padding: 40px 20px;
+  min-height: 100vh;
+  background-color: #f8f9fa;
+}
+
+.course-title {
+  text-align: center;
+  margin: 0 0 40px 0;
+  font-size: 2.5rem;
+  font-weight: bold;
+  color: #2c3e50;
+}
+
+.category-highlight {
+  color: #009EFF;
+}
+
+/* Combo carousel styles */
+.combo-container {
+  max-width: 1400px;
+  margin: 0 auto;
+  padding: 0;
+}
+
+.combo-slider {
+  display: flex;
+  align-items: center;
+}
+
+.combo-viewport {
+  overflow: hidden;
+  width: 100%;
+  padding: 0;
+}
+
+.combo-track {
+  display: flex;
+  transition: transform 600ms cubic-bezier(0.22, 1, 0.36, 1);
+  will-change: transform;
+}
+
+.combo-item {
+  flex: 0 0 auto;
+  box-sizing: border-box;
+  padding: 8px;
+}
+
+.combo-item>* {
+  height: 100%;
+}
+
+.combo-item .course-item {
+  width: 100% !important;
+  max-width: none !important;
+}
+
+.combo-button {
+  background: rgba(0, 0, 0, 0.06);
+  border: none;
+  width: 40px;
+  height: 40px;
+  border-radius: 999px;
+  cursor: pointer;
+  font-size: 20px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.combo-button:active {
+  transform: scale(0.98);
+}
+
+.combo-dots {
+  display: flex;
+  gap: 8px;
+  justify-content: center;
+  margin-top: 12px;
+}
+
+.combo-dot {
+  width: 10px;
+  height: 10px;
+  border-radius: 999px;
+  background: #ddd;
+  border: none;
+  cursor: pointer;
+  padding: 0;
+}
+
+.combo-dot.active {
+  background: #009EFF;
+}
+
+@media (max-width: 599px) {
+  .combo-button {
+    display: none;
+  }
+
+  .combo-item {
+    padding: 0 3px;
+  }
+
+  .combo-btn {
+    display: none !important;
+  }
+}

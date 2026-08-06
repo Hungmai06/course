@@ -1,0 +1,121 @@
+
+.cart-item {
+  display: flex;
+  align-items: flex-start;
+  gap: 18px;
+  padding: 20px 12px;
+  border-bottom: 1px solid #eee;
+  background: #fff;
+  border-radius: 12px;
+  box-shadow: 0 2px 12px rgba(0,0,0,0.04);
+  margin-bottom: 8px;
+}
+
+.cart-item-avatar, .cart-item-image img {
+  width: 100px;
+  height: 80px;
+  object-fit: cover;
+  border-radius: 10px;
+  box-shadow: 0 2px 8px rgba(108,99,255,0.10);
+  border: 1px solid #e0e0e0;
+  background: #f7f7fa;
+  margin-right: 0;
+}
+
+.cart-item-info {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+.cart-item-header h3 {
+  font-size: 18px;
+  font-weight: bold;
+  margin: 0 0 6px 0;
+  color: #333;
+}
+.cart-item-header p {
+  margin: 2px 0;
+  color: #666;
+  font-size: 14px;
+}
+
+.cart-item-details {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  margin-bottom: 10px;
+}
+.cart-item-details span {
+  font-size: 15px;
+}
+.cart-item-details .price {
+  color: #e74c3c;
+  font-weight: bold;
+  font-size: 16px;
+}
+.cart-item-details .total {
+  color: #27ae60;
+  font-weight: bold;
+  font-size: 18px;
+}
+
+.quantity-controls {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  margin: 8px 0;
+}
+.quantity-controls button {
+  width: 32px;
+  height: 32px;
+  border: 1px solid #ddd;
+  border-radius: 6px;
+  background: #fff;
+  font-size: 16px;
+  font-weight: bold;
+  cursor: pointer;
+  transition: background 0.2s;
+}
+.quantity-controls button:disabled {
+  background: #f5f5f5;
+  cursor: not-allowed;
+}
+
+.cart-item-actions {
+  margin-top: 8px;
+}
+.cart-item-actions button, .cart-item-remove {
+  background: #e74c3c;
+  color: #fff;
+  padding: 8px 18px;
+  border: none;
+  border-radius: 6px;
+  cursor: pointer;
+  font-size: 15px;
+  font-weight: 500;
+  box-shadow: 0 2px 8px rgba(231,76,60,0.08);
+  transition: background 0.2s;
+}
+.cart-item-actions button:hover, .cart-item-remove:hover {
+  background: #c0392b;
+}
+
+@media (max-width: 600px) {
+  .cart-item {
+    flex-direction: column;
+    align-items: flex-start;
+    padding: 12px 4px;
+    gap: 10px;
+  }
+  .cart-item-avatar, .cart-item-image img {
+    width: 90vw;
+    max-width: 320px;
+    height: 60vw;
+    max-height: 120px;
+  }
+  .cart-item-info {
+    gap: 4px;
+  }
+}

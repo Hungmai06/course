@@ -1,0 +1,149 @@
+server:
+  port: ${SERVER_PORT:8081}
+
+spring:
+  application:
+    name: ${SPRING_APPLICATION_NAME:backend service}
+  profiles:
+    active: ${SPRING_PROFILES_ACTIVE:dev}
+  security:
+    user:
+      name: ${SPRING_SECURITY_USER_NAME:admin}
+      password: ${SPRING_SECURITY_USER_PASSWORD:123456}
+
+  devtools:
+    add-properties: ${SPRING_DEVTOOLS_ADD_PROPERTIES:false}
+
+  datasource:
+    url: ${SPRING_DATASOURCE_URL:jdbc:postgresql://localhost:5432/course}
+    username: ${SPRING_DATASOURCE_USERNAME:admin}
+    password: ${SPRING_DATASOURCE_PASSWORD:Admin123@}
+    driver-class-name: ${SPRING_DATASOURCE_DRIVER_CLASS_NAME:org.postgresql.Driver}
+
+  mail:
+    host: ${SPRING_MAIL_HOST:smtp.gmail.com}
+    port: ${SPRING_MAIL_PORT:587}
+    username: ${SPRING_MAIL_USERNAME:khoahocdrive0604@gmail.com}
+    password: ${SPRING_MAIL_PASSWORD:itjo getr enfy bqqh}
+    properties:
+      mail:
+        smtp:
+          auth: ${SPRING_MAIL_PROPERTIES_MAIL_SMTP_AUTH:true}
+          starttls:
+            enable: ${SPRING_MAIL_PROPERTIES_MAIL_SMTP_STARTTLS_ENABLE:true}
+            required: ${SPRING_MAIL_PROPERTIES_MAIL_SMTP_STARTTLS_REQUIRED:true}
+  imap:
+    host: ${GMAIL_IMAP_HOST:imap.gmail.com}
+    port: ${GMAIL_IMAP_PORT:993}
+    username: ${GMAIL_USERNAME:khoahocdrive0604@gmail.com}           # ví dụ: khoahocdrive0604@gmail.com
+    password: ${GMAIL_APP_PASSWORD:itjo getr enfy bqqh}
+  jpa:
+    database-platform: ${SPRING_JPA_DATABASE_PLATFORM:org.hibernate.dialect.PostgreSQLDialect}
+    hibernate:
+      ddl-auto: ${SPRING_JPA_HIBERNATE_DDL_AUTO:update}
+    show-sql: ${SPRING_JPA_SHOW_SQL:true}
+    properties:
+      hibernate:
+        format_sql: ${SPRING_JPA_PROPERTIES_HIBERNATE_FORMAT_SQL:true}
+
+  servlet:
+    multipart:
+      enabled: ${SPRING_SERVLET_MULTIPART_ENABLED:true}
+      max-file-size: ${SPRING_SERVLET_MULTIPART_MAX_FILE_SIZE:10MB}
+      max-request-size: ${SPRING_SERVLET_MULTIPART_MAX_REQUEST_SIZE:10MB}
+
+gmail:
+  username: khoahocdrive0604@gmail.com
+timo:
+  sender: support@timo.vn
+
+management:
+  endpoints:
+    web:
+      exposure:
+        include: ${MANAGEMENT_ENDPOINTS_WEB_EXPOSURE_INCLUDE:*}
+
+logging:
+  level:
+    root: ${LOGGING_LEVEL_ROOT:INFO}
+    web: ${LOGGING_LEVEL_WEB:INFO}
+
+springdoc:
+  api-docs:
+    enabled: ${SPRINGDOC_API_DOCS_ENABLED:true}
+  swagger-ui:
+    enabled: ${SPRINGDOC_SWAGGER_UI_ENABLED:true}
+web:
+  encoding:
+    enabled: false
+  servlet:
+    compression:
+      enabled: false
+openapi:
+  service:
+    api-docs: ${OPENAPI_SERVICE_API_DOCS:backend-service}
+    server: ${OPENAPI_SERVICE_SERVER:http://localhost:${SERVER_PORT:8081}}
+    title: ${OPENAPI_SERVICE_TITLE:Backend service}
+    version: ${OPENAPI_SERVICE_VERSION:1.0.0}
+
+jwt:
+  expiryMinute: ${JWT_EXPIRY_MINUTE:5}
+  expiryDay: ${JWT_EXPIRY_DAY:14}
+  accessKey: ${JWT_ACCESS_KEY:Z3YmEphCpEaLM14gjwN3WWMsNkUJoncebqs6ZIElS0M=}
+  refreshKey: ${JWT_REFRESH_KEY:YzWtBjqYoRn5XX+AUkf5iSXGazL5U2LJF3cjR1Ruc3k=}
+
+vietqr:
+  generate-url: ${VIETQR_GENERATE_URL:https://api.vietqr.io/v2/generate}
+  client-id: ${VIETQR_CLIENT_ID:50175097-cc56-4629-8106-d2342de83dcd}
+  api-key: ${VIETQR_API_KEY:0dc1e8c5-b28c-4f23-9463-0731f9ca3723}
+  account-no: ${VIETQR_ACCOUNT_NO:0328028026}
+  account-name: ${VIETQR_ACCOUNT_NAME:"MAI VAN HUNG"}
+  account-acq-id: ${VIETQR_ACCOUNT_ACQ_ID:963388}    # BIN ngân hàng
+  account-template: ${VIETQR_ACCOUNT_TEMPLATE:compact}  # compact, compact2, qr_only, print
+
+google:
+  service-account:
+    type: service_account
+    project_id: myapp-466505
+    private_key_id: a57795bb334cee5d9a18ff2daef64974a74f2f63
+    private_key: |
+      -----BEGIN PRIVATE KEY-----
+      MIIEvgIBADANBgkqhkiG9w0BAQEFAASCBKgwggSkAgEAAoIBAQDH3lsZAfT9UXRn
+      8ybl+TaUhw8+dg4d/vW5Alvi/yP5Iq6yWArE6XH+1U3AfgxEbUt+2vUr1DS/T9um
+      dEJHGJvNyXKGnuRg9Ro70YXJEkb5y5oJ5mkhBgLzbdeojLaKwjAF7FrY9Fz6YYaX
+      85FfiDNa6MRUfLooHxdQRz8TxoOvaBP9hhEaVA0bkhmvmYdZdvHoe6BF0G3iXKVX
+      muSVOOSMwKPdlBg4nqIyxhayuLuQ7mMO+eVpt57acH6KYQAMx3XBgt2NHEpmWCYI
+      tJUgrFDU3Wqcc/ypuDYkHuFsdMHUb+aMSuCDhZ/+nTllEXZKwdVBcBNjXJyrxxYu
+      tpiI24bfAgMBAAECggEAE0p5ZXUEZezWPPBBmWHP7E8K4B755thEdEpvfv3cRYAc
+      93a6912G1K9W1VT1LyeTaVeN4WCWhL6a9zpyaTVNWHPwm2C7r0YI9awX6xvaAOMv
+      Z3Q3Qmo3n7JC5fBK8CKlCvVQoW8YiEwgdwsZxWw6dLRRusvdFeFGWUe/JVP8QtIv
+      qvQNkWiKKxVhOPHPtVnaI7ak2E45P6NjdzXIpgYXrx84rXcOylPFcFzo1x8FmhPi
+      pSlP8Xau7LCOe2npLFv4vC2tyK4cPmJSEw/RDcrRE9ijBc8Ufrhk3v2RWofARUoh
+      RWjEhytzmEOtxLLbKPMVLxPRH0g3iZjrLU4GKwMLWQKBgQDnAEjw5yuFwYL68prh
+      8eqgE4N3Vv9iDEE7R0y9xhhtbhc9r80NYjaswGcu/2eUOzU6iBKvbP4B4+OQp924
+      ZKD9XiryyxMS2e5vTU62PFhWa0hc1MIGMa46utoJa348WThUjdBiTWzeZPSFI6P2
+      i6XNry5vykiC97flRyyKg7fYmQKBgQDdf5Epxddr6Er25szMvF+Eve4KLUftjKBR
+      Nd9jTQr8qm65YT9Kuc+N1dWoyXCmwQ2czG8rWjVMII9udnWTsO04ViISXVkhWa4H
+      3HJuqT7WWJiPVIz66Jf4pMOQq2HwliJmxPJ+DU16ugEsMljie9ECzznheWqYLt7l
+      3KomQsSuNwKBgEw9fdV0lpq4uYAVniTAcU2P4y36GqPDo6vq5lskDF/hm+4SHb0z
+      ExSFFAkg5pC30eOVkYUwlc0N58eQf88h9zhoYghsGcl5AAbgHwBqfkVXdzScS8U7
+      lGNx1BCT18AXOk491+752tqzuzhOAQmYIYr3LH5c5v3CwID9sqesvXrRAoGBAMxP
+      FfRFJF7JhxRVcgVLoIPNuZszh0xL0bj3C1YKQ58qCjX+yKXB3PxEiO9G2B1Ip6jB
+      Pa3saIsO4Z6PsAaKRVYYxRbRehx0Hz3rDraacHbAhAB5ig0KrNtSB34TR6Tmp1bK
+      Ra8V0CjrF5fP3QMUGIgR457iIvu7CClYsK3YGpljAoGBAKgjuXp/M1WhoS3Dl/y8
+      2tx9mcJ94MKlUOlf2sloHvYhuJebRpkMFhEICQUkT0qduRVf0X5WeO3epsaF0oHB
+      q/J5tlVBXJl6DGOkLM48Bc/BX91rLzPpYw2HxUv4OCtDR0C75Hj4BUyuVBKj0t+/
+      pVaQ2t4STWdYUcU12rNbsSfP
+      -----END PRIVATE KEY-----
+    client_email: my-app@myapp-466505.iam.gserviceaccount.com
+    client_id: 115855828248695414891
+    auth_uri: https://accounts.google.com/o/oauth2/auth
+    token_uri: https://oauth2.googleapis.com/token
+    auth_provider_x509_cert_url: https://www.googleapis.com/oauth2/v1/certs
+    client_x509_cert_url: https://www.googleapis.com/robot/v1/metadata/x509/my-app%40myapp-466505.iam.gserviceaccount.com
+    universe_domain: googleapis.com
+
+cloudinary:
+  cloud-name: dizbxjyge
+  api-key: 731933247537359
+  api-secret: xTT0h9-Uw1uLBgdwzrITF4XJzyM

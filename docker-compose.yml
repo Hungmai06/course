@@ -1,0 +1,116 @@
+version: "3.8"
+
+services:
+  # ==========================================
+  # Database Service (PostgreSQL 15)
+  # ==========================================
+  postgres:
+    image: postgres:15-alpine
+    container_name: postgres
+    restart: unless-stopped
+    env_file:
+      - .env
+    environment:
+      POSTGRES_DB: ${POSTGRES_DB:-course}
+      POSTGRES_USER: ${POSTGRES_USER:-admin}
+      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD:-Admin123@}
+    ports:
+      - "5432:5432"
+    volumes:
+      - postgres_data:/var/lib/postgresql/data
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U ${POSTGRES_USER:-admin} -d ${POSTGRES_DB:-course}"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+    networks:
+      - app-net
+
+  # ==========================================
+  # Backend Service (Spring Boot 21)
+  # ==========================================
+  backend:
+    build:
+      context: ./backend
+      dockerfile: Dockerfile
+    container_name: backend
+    restart: unless-stopped
+    ports:
+      - "8081:8081"
+    env_file:
+      - .env
+    environment:
+      SERVER_PORT: 8081
+      SPRING_PROFILES_ACTIVE: ${SPRING_PROFILES_ACTIVE:-dev}
+      SPRING_DATASOURCE_URL: jdbc:postgresql://postgres:5432/${POSTGRES_DB:-course}
+      SPRING_DATASOURCE_USERNAME: ${POSTGRES_USER:-admin}
+      SPRING_DATASOURCE_PASSWORD: ${POSTGRES_PASSWORD:-Admin123@}
+      FILE_UPLOAD_DIR: /app/uploads/
+      JWT_EXPIRY_MINUTE: ${JWT_EXPIRY_MINUTE:-5}
+      JWT_EXPIRY_DAY: ${JWT_EXPIRY_DAY:-14}
+      JWT_ACCESS_KEY: ${JWT_ACCESS_KEY:-Z3YmEphCpEaLM14gjwN3WWMsNkUJoncebqs6ZIElS0M=}
+      JWT_REFRESH_KEY: ${JWT_REFRESH_KEY:-YzWtBjqYoRn5XX+AUkf5iSXGazL5U2LJF3cjR1Ruc3k=}
+      SPRING_MAIL_HOST: ${SPRING_MAIL_HOST:-smtp.gmail.com}
+      SPRING_MAIL_PORT: ${SPRING_MAIL_PORT:-587}
+      SPRING_MAIL_USERNAME: ${SPRING_MAIL_USERNAME:-khoahocdrive0604@gmail.com}
+      SPRING_MAIL_PASSWORD: ${SPRING_MAIL_PASSWORD:-itjo getr enfy bqqh}
+      GMAIL_IMAP_HOST: ${GMAIL_IMAP_HOST:-imap.gmail.com}
+      GMAIL_IMAP_PORT: ${GMAIL_IMAP_PORT:-993}
+      GMAIL_USERNAME: ${GMAIL_USERNAME:-khoahocdrive0604@gmail.com}
+      GMAIL_APP_PASSWORD: ${GMAIL_APP_PASSWORD:-itjo getr enfy bqqh}
+      VIETQR_GENERATE_URL: ${VIETQR_GENERATE_URL:-https://api.vietqr.io/v2/generate}
+      VIETQR_CLIENT_ID: ${VIETQR_CLIENT_ID:-50175097-cc56-4629-8106-d2342de83dcd}
+      VIETQR_API_KEY: ${VIETQR_API_KEY:-0dc1e8c5-b28c-4f23-9463-0731f9ca3723}
+      VIETQR_ACCOUNT_NO: ${VIETQR_ACCOUNT_NO:-56706042003}
+      VIETQR_ACCOUNT_NAME: ${VIETQR_ACCOUNT_NAME:-"MAI VAN HUNG"}
+      VIETQR_ACCOUNT_ACQ_ID: ${VIETQR_ACCOUNT_ACQ_ID:-970423}
+      VIETQR_ACCOUNT_TEMPLATE: ${VIETQR_ACCOUNT_TEMPLATE:-compact}
+    depends_on:
+      postgres:
+        condition: service_healthy
+    volumes:
+      - ./backend/uploads:/app/uploads
+      - ./backend/tokens:/app/tokens
+    networks:
+      - app-net
+
+  # ==========================================
+  # Frontend Main Service (React + Vite + Nginx)
+  # ==========================================
+  frontend:
+    build:
+      context: ./frontend/FE
+      dockerfile: Dockerfile
+    container_name: frontend
+    restart: unless-stopped
+    ports:
+      - "5173:80"
+    depends_on:
+      - backend
+    networks:
+      - app-net
+
+  # ==========================================
+  # Frontend 48Ngay / DolphinLearn Service
+  # ==========================================
+  48ngay:
+    build:
+      context: ./48ngay
+      dockerfile: Dockerfile
+      args:
+        VITE_API_BASE_URL: ${VITE_API_BASE_URL:-https://khoahocdrivemh.pro.vn}
+    container_name: 48ngay-frontend
+    restart: unless-stopped
+    ports:
+      - "5174:80"
+    depends_on:
+      - backend
+    networks:
+      - app-net
+
+volumes:
+  postgres_data:
+
+networks:
+  app-net:
+    driver: bridge

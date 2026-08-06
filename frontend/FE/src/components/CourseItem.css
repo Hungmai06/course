@@ -1,0 +1,279 @@
+.course-item {
+  width: 100%;
+  border: 1px solid #e0e0e0;
+  border-radius: 12px;
+  overflow: hidden;
+  background-color: #fff;
+  box-shadow: 0 2px 10px rgba(0, 0, 0, 0.08);
+  display: flex;
+  flex-direction: column;
+  position: relative;
+  transition: transform 0.3s ease, box-shadow 0.3s ease;
+  cursor: pointer;
+}
+
+.course-item:hover {
+  transform: translateY(-4px);
+  box-shadow: 0 8px 25px rgba(0, 0, 0, 0.15);
+}
+
+.course-image img {
+  width: 100%;
+  height: 160px;
+  object-fit: cover;
+}
+
+.discount-badge {
+  position: absolute;
+  top: 10px;
+  left: 10px;
+  background-color: crimson;
+  color: white;
+  padding: 3px 8px;
+  font-size: 12px;
+  font-weight: bold;
+  border-radius: 4px;
+}
+
+.course-content {
+  padding: 16px;
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  gap: 8px;
+}
+
+.course-item-title {
+  text-align: center;
+  margin: 0 0 12px 0 !important;
+  font-size: 0.9rem !important;
+  font-weight: bold;
+  color: #2c3e50;
+}
+
+.course-author {
+  font-size: 1rem !important;
+  color: #718096;
+  font-weight: 500 !important;
+  margin-bottom: 8px;
+}
+
+/* Course Stats - Rating và Students */
+.course-stats {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+  margin-bottom: 12px;
+}
+
+.rating {
+  display: flex;
+  align-items: center;
+  gap: 4px;
+}
+
+.star-icon {
+  color: #ffa500;
+  font-size: 15px;
+}
+
+.rating-score {
+  font-weight: 600;
+  color: #2d3748;
+  font-size: 15px;
+}
+
+.rating-count {
+  color: #718096;
+  font-size: 14px;
+}
+
+.students {
+  display: flex;
+  align-items: center;
+  gap: 4px;
+}
+
+.users-icon {
+  color: #667eea;
+  font-size: 14px;
+}
+
+.student-count {
+  color: #718096;
+  font-size: 14px;
+}
+
+.course-pricing {
+  margin-bottom: 14px;
+  display: flex;
+  align-items: center;
+  gap: 6px;
+}
+
+.old-price {
+  text-decoration: line-through;
+  color: #a0aec0;
+  font-size: 13px;
+}
+
+.new-price {
+  color: #e53e3e;
+  font-weight: 700;
+  font-size: 18px;
+}
+
+.buy-button {
+  background: linear-gradient(135deg, #009EFF, #0078D4);
+  color: white;
+  border: none;
+  padding: 12px 16px;
+  border-radius: 8px;
+  cursor: pointer;
+  font-size: 14px;
+  font-weight: 600;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 6px;
+  transition: all 0.3s ease;
+  width: 100%;
+}
+
+.buy-button:hover {
+  background: linear-gradient(135deg, #0078D4, #0062b0);
+  transform: translateY(-1px);
+  box-shadow: 0 4px 12px rgba(102, 126, 234, 0.4);
+}
+
+@media (max-width: 600px) {
+  .course-item {
+    width: 100% !important;
+    margin: 0 auto 8px auto !important;
+    padding: 0 !important;
+    /* Removed padding */
+    font-size: 0.65rem !important;
+    border-radius: 8px !important;
+    min-width: 0;
+    max-width: 100%;
+    box-sizing: border-box;
+    overflow: hidden;
+    /* Ensure image respects border radius */
+  }
+
+  .course-content {
+    padding: 8px !important;
+    /* Move padding to content */
+  }
+
+  .course-item img,
+  .course-image img {
+    width: 100% !important;
+    max-width: 100% !important;
+    /* Full width */
+    height: 110px !important;
+    /* Slightly increased height */
+    margin: 0 !important;
+    /* No margin */
+    display: block;
+    border-radius: 0 !important;
+    /* Let parent handle radius */
+    object-fit: cover;
+  }
+
+  .course-title,
+  .course-item-title {
+    font-size: 0.7rem !important;
+    margin-bottom: 2px;
+    text-align: center;
+  }
+
+  .course-meta,
+  .course-price,
+  .course-desc {
+    font-size: 0.55rem !important;
+  }
+
+  .course-action {
+    font-size: 0.65rem !important;
+    padding: 2px 4px !important;
+    border-radius: 4px !important;
+  }
+
+  .buy-button {
+    font-size: 0.65rem !important;
+    padding: 5px 6px !important;
+    min-width: 0;
+    width: 100%;
+    border-radius: 6px;
+  }
+
+  .course-content {
+    padding: 6px !important;
+    gap: 4px !important;
+  }
+}
+
+/* Split Action Buttons (Outside Media Query) */
+.course-actions {
+  display: flex;
+  gap: 8px;
+  width: 100%;
+}
+
+.action-btn {
+  flex: 1;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border-radius: 6px;
+  border: none;
+  cursor: pointer;
+  font-size: 13px;
+  font-weight: 600;
+  padding: 8px 4px;
+  /* Reduced vertical padding */
+  transition: all 0.2s ease;
+  white-space: nowrap;
+  /* Ensure text helps split */
+}
+
+/* Buy Now - Primary (Solid Blue) */
+.btn-buy-now {
+  background: #009EFF;
+  color: white;
+}
+
+.btn-buy-now:hover {
+  background: #0078D4;
+  transform: translateY(-1px);
+}
+
+/* Add Cart - Secondary (Outline Cyan) */
+.btn-add-cart {
+  background: white;
+  color: #009EFF;
+  border: 1px solid #009EFF;
+  font-size: 13px;
+  /* Ensure text matches */
+}
+
+.btn-add-cart:hover {
+  background: #e0f2fe;
+  /* Light cyan bg */
+  transform: translateY(-1px);
+}
+
+/* Adjust specifically for HomeCategorySection mini-items */
+.home-category-section .action-btn {
+  font-size: 11px !important;
+  padding: 6px 2px !important;
+}
+
+@media (max-width: 600px) {
+  .action-btn {
+    padding: 4px 2px !important;
+    font-size: 10px !important;
+  }
+}

@@ -1,0 +1,19 @@
+services:
+
+  frontend:
+
+    build:
+      context: .
+      dockerfile: Dockerfile
+
+      args:
+        VITE_API_BASE_URL: https://khoahocdrivemh.pro.vn
+
+    image: 48ngay-frontend:latest
+
+    container_name: 48ngay-frontend
+
+    ports:
+      - "5174:80"
+
+    restart: unless-stopped

@@ -1,0 +1,83 @@
+.voucher-list-container {
+  max-width: 900px;
+  margin: 20px auto;
+  padding: 20px;
+}
+
+.voucher-list-container h2 {
+  text-align: center;
+  color: #333;
+  margin-bottom: 30px;
+  font-size: 1.8rem;
+}
+
+.voucher-grid {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  gap: 15px;
+  max-width: 1000px;
+  margin: 0 auto;
+}
+
+/* Responsive breakpoints */
+@media (max-width: 1200px) {
+  .voucher-grid {
+    grid-template-columns: repeat(3, 1fr);
+  }
+}
+
+@media (max-width: 768px) {
+  .voucher-grid {
+    grid-template-columns: repeat(2, 1fr);
+    gap: 12px;
+  }
+}
+
+@media (max-width: 480px) {
+  .voucher-grid {
+    grid-template-columns: 1fr;
+    gap: 10px;
+  }
+}
+
+.loading-message,
+.error-message,
+.empty-message {
+  text-align: center;
+  padding: 40px 20px;
+  background: white;
+  border-radius: 12px;
+  box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+}
+
+.loading-message p {
+  color: #666;
+  font-size: 1.1rem;
+}
+
+.error-message p {
+  color: #e74c3c;
+  font-size: 1.1rem;
+  margin-bottom: 15px;
+}
+
+.error-message button {
+  background: #007bff;
+  color: white;
+  border: none;
+  padding: 10px 20px;
+  border-radius: 6px;
+  cursor: pointer;
+  font-size: 1rem;
+  transition: background 0.3s ease;
+}
+
+.error-message button:hover {
+  background: #0056b3;
+}
+
+.empty-message p {
+  color: #666;
+  font-size: 1.1rem;
+  margin: 0;
+}

@@ -1,0 +1,26 @@
+
+.course-list {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  gap: 16px;
+}
+
+@media (max-width: 900px) {
+  .course-list {
+    grid-template-columns: repeat(3, 1fr);
+  }
+}
+
+@media (max-width: 600px) {
+  .course-list {
+    grid-template-columns: repeat(2, 1fr);
+    gap: 8px;
+  }
+}
+
+@media (max-width: 600px) {
+  .course-list {
+    grid-template-columns: repeat(2, 1fr);
+    gap: 8px;
+  }
+}

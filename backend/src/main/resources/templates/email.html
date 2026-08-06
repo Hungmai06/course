@@ -1,0 +1,68 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>Email Xác Nhận Đơn Hàng</title>
+</head>
+<body style="font-family: Arial, sans-serif; background-color: #f6f6f6; padding: 40px; margin: 0;">
+<div style="
+        background-color: white;
+        padding: 30px;
+        border-radius: 10px;
+        border: 1px solid #ddd;
+        max-width: 700px;
+        margin: auto;
+        box-shadow: 0 0 10px rgba(0,0,0,0.08);
+    ">
+    <h2 style="color: #2e7d32; text-align: center;">🎉 Thanh Toán Thành Công!</h2>
+
+    <p>Xin chào <strong th:text="${name}">Tên người nhận</strong>,</p>
+
+    <p>Chúng tôi đã nhận được thanh toán của bạn. Dưới đây là thông tin đơn hàng:</p>
+
+    <table style="width: 100%; border-collapse: collapse; margin-top: 15px;">
+        <tr><td style="padding: 8px; border: 1px solid #ccc;"><strong>Mã đơn hàng:</strong></td>
+            <td style="padding: 8px; border: 1px solid #ccc;" th:text="${orderId}">12345</td></tr>
+        <tr><td style="padding: 8px; border: 1px solid #ccc;"><strong>Tổng tiền:</strong></td>
+            <td style="padding: 8px; border: 1px solid #ccc;" th:text="${totalAmount}">1.000.000</td></tr>
+        <tr><td style="padding: 8px; border: 1px solid #ccc;"><strong>Giảm giá:</strong></td>
+            <td style="padding: 8px; border: 1px solid #ccc;" th:text="${discountAmount}">100.000</td></tr>
+        <tr><td style="padding: 8px; border: 1px solid #ccc;"><strong>Số tiền thanh toán:</strong></td>
+            <td style="padding: 8px; border: 1px solid #ccc;" th:text="${finalAmount}">900.000</td></tr>
+        <tr><td style="padding: 8px; border: 1px solid #ccc;"><strong>Mô tả:</strong></td>
+            <td style="padding: 8px; border: 1px solid #ccc;" th:text="${description}">Khóa học ABC</td></tr>
+    </table>
+
+    <div style="margin-top: 30px;">
+        <p style="text-align: center; font-weight: bold; color: #4a148c;">
+            🎓 Bạn có thể truy cập các khóa học của mình tại đây:
+        </p>
+
+        <div th:each="link : ${courseLinks}"
+             style="background-color: #f0f4ff;
+                        padding: 12px 20px;
+                        margin-bottom: 12px;
+                        border-radius: 8px;
+                        border: 1px solid #90caf9;
+                        text-align: center;
+                        max-width: 100%;">
+            <a th:href="${link.url}" th:text="${link.name}" target="_blank"
+               style="display: inline-block;
+                          padding: 10px 20px;
+                          background-color: #1976d2;
+                          color: white;
+                          text-decoration: none;
+                          border-radius: 5px;
+                          font-weight: bold;
+                          font-size: 15px;">
+            </a>
+        </div>
+    </div>
+
+    <p style="margin-top: 30px; text-align: center;">
+        Cảm ơn bạn đã đồng hành cùng chúng tôi!<br>
+        <i>Đội ngũ hỗ trợ KhoaHocDriveMH.</i>
+    </p>
+</div>
+</body>
+</html>

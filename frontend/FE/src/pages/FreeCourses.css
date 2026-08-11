@@ -25,6 +25,16 @@
   overflow-x: hidden;
 }
 
+.free-dashboard-layout.single-column {
+  max-width: 1200px;
+  margin: 0 auto;
+  justify-content: center;
+}
+
+.free-dashboard-layout.single-column .free-content-area {
+  width: 100%;
+}
+
 /* =================================================== */
 /* SIDEBAR STYLING                                     */
 /* =================================================== */

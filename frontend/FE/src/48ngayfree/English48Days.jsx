@@ -28,10 +28,10 @@ const FULL_COURSE_LINK = "https://khoahocdrivemh.pro.vn/course/khoa-hoc-48-ngay-
 
 // Bank details for the 1/3 Sidebar QR component
 const SUPPORT_BANK = {
-  bankName: "MB Bank (Quân Đội)",
-  accountNumber: "56706042003",
+  bankName: "Ngân hàng số Timo (Timo)",
+  accountNumber: "0328028026",
   accountName: "MAI VAN HUNG",
-  qrImage: "https://img.vietqr.io/image/970422-56706042003-compact.jpg?addInfo=UngHoDuAn&accountName=MAI%20VAN%20HUNG"
+  qrImage: "https://img.vietqr.io/image/963388-0328028026-compact.jpg?addInfo=UngHoDuAn&accountName=MAI%20VAN%20HUNG"
 };
 
 // Helper to get local date string (YYYY-MM-DD)

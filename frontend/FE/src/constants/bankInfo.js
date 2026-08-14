@@ -20,7 +20,6 @@ export const BANK_INFO = {
       'Techcombank': '970407',
       'MBBank': '970422',
       'ACB': '970416',
-      'TPBank': '970423',
       'Sacombank': '970403',
       'Timo': '963388'
     };

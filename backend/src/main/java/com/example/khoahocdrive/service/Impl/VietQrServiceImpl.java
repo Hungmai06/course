@@ -103,28 +103,24 @@ public class VietQrServiceImpl implements VietQrService {
                 .build();
         transactionRepository.save(transaction);
 
-        // Làm sạch dữ liệu để mã QR chuẩn hóa 100% theo EMVCo
-        String cleanAccountName = accountName != null ? accountName.replace("\"", "").trim() : "MAI VAN HUNG";
         long cleanAmount = amount != null ? amount.longValue() : 0L;
-        String cleanAddInfo = description != null ? description.trim() : "THANHTOAN";
+        String cleanAddInfo = description != null ? description.trim() : "";
 
-        // Tạo trực tiếp URL VietQR Quick Link theo đúng định dạng:
-        // https://img.vietqr.io/image/BIN-SOTAIKHOAN-compact2.png?amount=SOTIEN&addInfo=NOIDUNG&accountName=TENCHUTAIKHOAN
+        // Trả về trực tiếp URL VietQR theo đúng mẫu yêu cầu:
+        // https://img.vietqr.io/image/970454-0328028026-compact2.png?amount=SOTIEN&addInfo=NOIDUNG&accountName=MAI%20VAN%20HUNG
         try {
             String encodedAddInfo = java.net.URLEncoder.encode(cleanAddInfo, java.nio.charset.StandardCharsets.UTF_8.name());
-            String encodedAccountName = java.net.URLEncoder.encode(cleanAccountName, java.nio.charset.StandardCharsets.UTF_8.name());
-            String templateName = (template != null && !template.trim().isEmpty()) ? template : "compact2";
-            
-            String quickLinkUrl = String.format("https://img.vietqr.io/image/%s-%s-%s.png?amount=%d&addInfo=%s&accountName=%s",
-                    acqId, accountNo, templateName, cleanAmount, encodedAddInfo, encodedAccountName);
+            String quickLinkUrl = String.format("https://img.vietqr.io/image/970454-0328028026-compact2.png?amount=%d&addInfo=%s&accountName=MAI%%20VAN%%20HUNG",
+                    cleanAmount, encodedAddInfo);
             
             log.info("Generated VietQR QuickLink URL: {}", quickLinkUrl);
             return quickLinkUrl;
         } catch (Exception e) {
-            return String.format("https://img.vietqr.io/image/%s-%s-compact2.png?amount=%d&addInfo=%s",
-                    acqId, accountNo, cleanAmount, cleanAddInfo);
+            return String.format("https://img.vietqr.io/image/970454-0328028026-compact2.png?amount=%d&addInfo=%s&accountName=MAI%%20VAN%%20HUNG",
+                    cleanAmount, cleanAddInfo);
         }
     }
+
 
 
 

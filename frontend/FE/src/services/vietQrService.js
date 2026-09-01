@@ -83,27 +83,15 @@ const vietQrService = {
    */
   generatePublicQrUrl: (bankCode, accountNumber, amount, description, accountName) => {
     try {
-      if (!bankCode || !accountNumber) {
-        throw new Error('Missing bank information');
-      }
-
       const cleanAmount = Math.round(Number(amount) || 0);
-      const cleanAccountName = (accountName || BANK_INFO.PRIMARY_BANK.accountName || '').replace(/"/g, '').trim();
-      const cleanDescription = (description || 'THANHTOAN').trim();
-
-      const params = new URLSearchParams({
-        amount: cleanAmount,
-        addInfo: cleanDescription,
-        accountName: cleanAccountName
-      });
-
-      const formattedBankCode = BANK_INFO.getVietQrBankCode(bankCode) || bankCode;
-      return `https://img.vietqr.io/image/${formattedBankCode}-${accountNumber}-compact2.png?${params.toString()}`;
+      const cleanDescription = (description || '').trim();
+      return `https://img.vietqr.io/image/970454-0328028026-compact2.png?amount=${cleanAmount}&addInfo=${encodeURIComponent(cleanDescription)}&accountName=MAI%20VAN%20HUNG`;
     } catch (error) {
     
       return null;
     }
   },
+
 
 
 

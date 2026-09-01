@@ -103,57 +103,29 @@ public class VietQrServiceImpl implements VietQrService {
                 .build();
         transactionRepository.save(transaction);
 
-        // Làm sạch dữ liệu để mã QR chuẩn hóa 100% theo EMVCo (không dính dấu câu, quotes, hay decimal số tiền)
+        // Làm sạch dữ liệu để mã QR chuẩn hóa 100% theo EMVCo
         String cleanAccountName = accountName != null ? accountName.replace("\"", "").trim() : "MAI VAN HUNG";
         long cleanAmount = amount != null ? amount.longValue() : 0L;
         String cleanAddInfo = description != null ? description.trim() : "THANHTOAN";
 
-        // Gọi API VietQR với fallback an toàn
-        try {
-            RestTemplate restTemplate = new RestTemplate();
-            Map<String, Object> requestData = Map.of(
-                    "accountNo", accountNo,
-                    "accountName", cleanAccountName,
-                    "acqId", Integer.parseInt(acqId),
-                    "amount", cleanAmount,
-                    "addInfo", cleanAddInfo,
-                    "template", template != null ? template : "compact2"
-            );
-
-            HttpHeaders headers = new HttpHeaders();
-            headers.setContentType(MediaType.APPLICATION_JSON);
-            headers.set("x-client-id", clientId);
-            headers.set("x-api-key", apiKey);
-
-            HttpEntity<Map<String, Object>> entity = new HttpEntity<>(requestData, headers);
-
-            ResponseEntity<Map> response = restTemplate.exchange(
-                    generateUrl,
-                    HttpMethod.POST,
-                    entity,
-                    Map.class
-            );
-
-            if (response.getBody() != null && response.getBody().get("data") != null) {
-                Map<String, Object> data = (Map<String, Object>) response.getBody().get("data");
-                if (data != null && data.get("qrDataURL") != null) {
-                    return (String) data.get("qrDataURL");
-                }
-            }
-        } catch (Exception e) {
-            log.error("Lỗi khi gọi API VietQR, chuyển sang dùng URL VietQR public fallback: {}", e.getMessage());
-        }
-
-        // Fallback URL nếu API VietQR gặp lỗi
+        // Tạo trực tiếp URL VietQR Quick Link theo đúng định dạng:
+        // https://img.vietqr.io/image/BIN-SOTAIKHOAN-compact2.png?amount=SOTIEN&addInfo=NOIDUNG&accountName=TENCHUTAIKHOAN
         try {
             String encodedAddInfo = java.net.URLEncoder.encode(cleanAddInfo, java.nio.charset.StandardCharsets.UTF_8.name());
             String encodedAccountName = java.net.URLEncoder.encode(cleanAccountName, java.nio.charset.StandardCharsets.UTF_8.name());
-            return String.format("https://img.vietqr.io/image/%s-%s-%s.png?amount=%d&addInfo=%s&accountName=%s",
-                    acqId, accountNo, template != null ? template : "compact2", cleanAmount, encodedAddInfo, encodedAccountName);
+            String templateName = (template != null && !template.trim().isEmpty()) ? template : "compact2";
+            
+            String quickLinkUrl = String.format("https://img.vietqr.io/image/%s-%s-%s.png?amount=%d&addInfo=%s&accountName=%s",
+                    acqId, accountNo, templateName, cleanAmount, encodedAddInfo, encodedAccountName);
+            
+            log.info("Generated VietQR QuickLink URL: {}", quickLinkUrl);
+            return quickLinkUrl;
         } catch (Exception e) {
-            return String.format("https://img.vietqr.io/image/%s-%s-compact2.png?amount=%d", acqId, accountNo, cleanAmount);
+            return String.format("https://img.vietqr.io/image/%s-%s-compact2.png?amount=%d&addInfo=%s",
+                    acqId, accountNo, cleanAmount, cleanAddInfo);
         }
     }
+
 
 
     @Override

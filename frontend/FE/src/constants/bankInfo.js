@@ -2,13 +2,14 @@
 export const BANK_INFO = {
   // Thông tin ngân hàng chính để nhận thanh toán
   PRIMARY_BANK: {
-    bankCode: '963388', // Mã ngân hàng Timo
-    bankName: 'Ngân hàng số Timo by BV Bank (Timo)',
-    bankShortName: 'Timo',
+    bankCode: '970454', // Mã ngân hàng BVBank / Timo
+    bankName: 'Ngân hàng số Timo by BV Bank (BVBank)',
+    bankShortName: 'BVBank',
     accountNumber: '0328028026', // Số tài khoản Timo
     accountName: 'MAI VAN HUNG', // Tên chủ tài khoản
-    branch: 'Timo Digital Bank' // Optional
+    branch: 'BVBank' // Optional
   },
+
   
   // Format cho VietQR
   getVietQrBankCode: (bankShortName) => {

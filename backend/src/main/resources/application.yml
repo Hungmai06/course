@@ -97,7 +97,7 @@ vietqr:
   client-id: ${VIETQR_CLIENT_ID:50175097-cc56-4629-8106-d2342de83dcd}
   api-key: ${VIETQR_API_KEY:0dc1e8c5-b28c-4f23-9463-0731f9ca3723}
   account-no: ${VIETQR_ACCOUNT_NO:0328028026}
-  account-name: ${VIETQR_ACCOUNT_NAME:"MAI VAN HUNG"}
+  account-name: ${VIETQR_ACCOUNT_NAME:MAI VAN HUNG}
   account-acq-id: ${VIETQR_ACCOUNT_ACQ_ID:963388}    # BIN ngân hàng
   account-template: ${VIETQR_ACCOUNT_TEMPLATE:compact}  # compact, compact2, qr_only, print
 

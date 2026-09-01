@@ -103,16 +103,21 @@ public class VietQrServiceImpl implements VietQrService {
                 .build();
         transactionRepository.save(transaction);
 
+        // Làm sạch dữ liệu để mã QR chuẩn hóa 100% theo EMVCo (không dính dấu câu, quotes, hay decimal số tiền)
+        String cleanAccountName = accountName != null ? accountName.replace("\"", "").trim() : "MAI VAN HUNG";
+        long cleanAmount = amount != null ? amount.longValue() : 0L;
+        String cleanAddInfo = description != null ? description.trim() : "THANHTOAN";
+
         // Gọi API VietQR với fallback an toàn
         try {
             RestTemplate restTemplate = new RestTemplate();
             Map<String, Object> requestData = Map.of(
                     "accountNo", accountNo,
-                    "accountName", accountName,
+                    "accountName", cleanAccountName,
                     "acqId", Integer.parseInt(acqId),
-                    "amount", amount,
-                    "addInfo", description,
-                    "template", template
+                    "amount", cleanAmount,
+                    "addInfo", cleanAddInfo,
+                    "template", template != null ? template : "compact2"
             );
 
             HttpHeaders headers = new HttpHeaders();
@@ -141,14 +146,15 @@ public class VietQrServiceImpl implements VietQrService {
 
         // Fallback URL nếu API VietQR gặp lỗi
         try {
-            String encodedAddInfo = java.net.URLEncoder.encode(description, java.nio.charset.StandardCharsets.UTF_8.name());
-            String encodedAccountName = java.net.URLEncoder.encode(accountName, java.nio.charset.StandardCharsets.UTF_8.name());
-            return String.format("https://img.vietqr.io/image/%s-%s-%s.png?amount=%s&addInfo=%s&accountName=%s",
-                    acqId, accountNo, template != null ? template : "compact2", amount, encodedAddInfo, encodedAccountName);
+            String encodedAddInfo = java.net.URLEncoder.encode(cleanAddInfo, java.nio.charset.StandardCharsets.UTF_8.name());
+            String encodedAccountName = java.net.URLEncoder.encode(cleanAccountName, java.nio.charset.StandardCharsets.UTF_8.name());
+            return String.format("https://img.vietqr.io/image/%s-%s-%s.png?amount=%d&addInfo=%s&accountName=%s",
+                    acqId, accountNo, template != null ? template : "compact2", cleanAmount, encodedAddInfo, encodedAccountName);
         } catch (Exception e) {
-            return String.format("https://img.vietqr.io/image/%s-%s-compact2.png?amount=%s", acqId, accountNo, amount);
+            return String.format("https://img.vietqr.io/image/%s-%s-compact2.png?amount=%d", acqId, accountNo, cleanAmount);
         }
     }
+
 
     @Override
     public boolean checkPaymentStatus(String description) {

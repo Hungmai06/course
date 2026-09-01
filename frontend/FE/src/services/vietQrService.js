@@ -87,10 +87,14 @@ const vietQrService = {
         throw new Error('Missing bank information');
       }
 
+      const cleanAmount = Math.round(Number(amount) || 0);
+      const cleanAccountName = (accountName || BANK_INFO.PRIMARY_BANK.accountName || '').replace(/"/g, '').trim();
+      const cleanDescription = (description || 'THANHTOAN').trim();
+
       const params = new URLSearchParams({
-        amount: amount || 0,
-        addInfo: description?.trim() || 'Thanh toán đơn hàng',
-        accountName: accountName || BANK_INFO.PRIMARY_BANK.accountName || ''
+        amount: cleanAmount,
+        addInfo: cleanDescription,
+        accountName: cleanAccountName
       });
 
       const formattedBankCode = BANK_INFO.getVietQrBankCode(bankCode) || bankCode;
@@ -100,6 +104,7 @@ const vietQrService = {
       return null;
     }
   },
+
 
 
   /**

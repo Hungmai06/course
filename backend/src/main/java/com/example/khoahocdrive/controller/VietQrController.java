@@ -36,8 +36,11 @@ public class VietQrController {
         return ResponseEntity.ok(paymentUrl);
     }
 
-//    @GetMapping("/confirm")
-//    public void confirm(@RequestParam String description) {
-//        vietQrService.confirm(description);
-//    }
+    @GetMapping("/confirm")
+    @Operation(summary = "Check payment status by description")
+    public ResponseEntity<Boolean> confirm(@RequestParam String description) {
+        boolean isPaid = vietQrService.checkPaymentStatus(description);
+        return ResponseEntity.ok(isPaid);
+    }
 }
+

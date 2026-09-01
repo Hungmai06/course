@@ -6,7 +6,7 @@ const API_BASE_URL = `${import.meta.env.VITE_API_BASE_URL}/api/v1`;
 // Helper function to get auth headers with better error handling
 const getAuthHeaders = () => {
   try {
-    const token = localStorage.getItem('authToken');
+    const token = localStorage.getItem('accessToken') || localStorage.getItem('authToken');
     return {
       'Content-Type': 'application/json',
       ...(token && { 'Authorization': `Bearer ${token}` })
@@ -50,10 +50,11 @@ const vietQrService = {
         throw new Error('Invalid QR code data format');
       }
 
-      // Format QR code URL
-      const qrCodeUrl = res.data.startsWith('data:image') 
-        ? res.data 
-        : `data:image/png;base64,${res.data}`;
+      // Format QR code URL (supports base64, data:image, and http/https URLs)
+      let qrCodeUrl = res.data;
+      if (!qrCodeUrl.startsWith('data:image') && !qrCodeUrl.startsWith('http')) {
+        qrCodeUrl = `data:image/png;base64,${res.data}`;
+      }
 
       return { 
         success: true, 
@@ -89,17 +90,17 @@ const vietQrService = {
       const params = new URLSearchParams({
         amount: amount || 0,
         addInfo: description?.trim() || 'Thanh toán đơn hàng',
-        accountName: accountName || BANK_INFO.PRIMARY_BANK.accountName || '',
-        template: 'compact2'
+        accountName: accountName || BANK_INFO.PRIMARY_BANK.accountName || ''
       });
 
       const formattedBankCode = BANK_INFO.getVietQrBankCode(bankCode) || bankCode;
-      return `https://img.vietqr.io/image/${formattedBankCode}-${accountNumber}-print.png?${params}`;
+      return `https://img.vietqr.io/image/${formattedBankCode}-${accountNumber}-compact2.png?${params.toString()}`;
     } catch (error) {
     
       return null;
     }
   },
+
 
   /**
    * Kiểm tra trạng thái thanh toán với retry logic

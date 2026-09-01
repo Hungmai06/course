@@ -9,4 +9,6 @@ import java.util.Map;
 public interface VietQrService {
     String createQrPayment(Long orderId,BigDecimal amount,String description);
     void confirmBill(Bill bill);
+    boolean checkPaymentStatus(String description);
 }
+

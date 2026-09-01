@@ -103,34 +103,63 @@ public class VietQrServiceImpl implements VietQrService {
                 .build();
         transactionRepository.save(transaction);
 
-        // Gọi API VietQR
-        RestTemplate restTemplate = new RestTemplate();
-        Map<String, Object> requestData = Map.of(
-                "accountNo", accountNo,
-                "accountName", accountName,
-                "acqId", Integer.parseInt(acqId),
-                "amount", amount,
-                "addInfo", description,
-                "template", template
-        );
+        // Gọi API VietQR với fallback an toàn
+        try {
+            RestTemplate restTemplate = new RestTemplate();
+            Map<String, Object> requestData = Map.of(
+                    "accountNo", accountNo,
+                    "accountName", accountName,
+                    "acqId", Integer.parseInt(acqId),
+                    "amount", amount,
+                    "addInfo", description,
+                    "template", template
+            );
 
-        HttpHeaders headers = new HttpHeaders();
-        headers.setContentType(MediaType.APPLICATION_JSON);
-        headers.set("x-client-id", clientId);
-        headers.set("x-api-key", apiKey);
+            HttpHeaders headers = new HttpHeaders();
+            headers.setContentType(MediaType.APPLICATION_JSON);
+            headers.set("x-client-id", clientId);
+            headers.set("x-api-key", apiKey);
 
-        HttpEntity<Map<String, Object>> entity = new HttpEntity<>(requestData, headers);
+            HttpEntity<Map<String, Object>> entity = new HttpEntity<>(requestData, headers);
 
-        ResponseEntity<Map> response = restTemplate.exchange(
-                generateUrl,
-                HttpMethod.POST,
-                entity,
-                Map.class
-        );
+            ResponseEntity<Map> response = restTemplate.exchange(
+                    generateUrl,
+                    HttpMethod.POST,
+                    entity,
+                    Map.class
+            );
 
-        // Lấy QR base64 từ response
-        Map<String, Object> data = (Map<String, Object>) response.getBody().get("data");
-        return (String) data.get("qrDataURL");
+            if (response.getBody() != null && response.getBody().get("data") != null) {
+                Map<String, Object> data = (Map<String, Object>) response.getBody().get("data");
+                if (data != null && data.get("qrDataURL") != null) {
+                    return (String) data.get("qrDataURL");
+                }
+            }
+        } catch (Exception e) {
+            log.error("Lỗi khi gọi API VietQR, chuyển sang dùng URL VietQR public fallback: {}", e.getMessage());
+        }
+
+        // Fallback URL nếu API VietQR gặp lỗi
+        try {
+            String encodedAddInfo = java.net.URLEncoder.encode(description, java.nio.charset.StandardCharsets.UTF_8.name());
+            String encodedAccountName = java.net.URLEncoder.encode(accountName, java.nio.charset.StandardCharsets.UTF_8.name());
+            return String.format("https://img.vietqr.io/image/%s-%s-%s.png?amount=%s&addInfo=%s&accountName=%s",
+                    acqId, accountNo, template != null ? template : "compact2", amount, encodedAddInfo, encodedAccountName);
+        } catch (Exception e) {
+            return String.format("https://img.vietqr.io/image/%s-%s-compact2.png?amount=%s", acqId, accountNo, amount);
+        }
+    }
+
+    @Override
+    public boolean checkPaymentStatus(String description) {
+        if (description == null || description.trim().isEmpty()) {
+            return false;
+        }
+        Optional<Order> orderOpt = orderRepository.findByDescription(description.trim());
+        if (orderOpt.isEmpty()) {
+            orderOpt = orderRepository.findByBillDescription(description.trim());
+        }
+        return orderOpt.isPresent() && orderOpt.get().getStatus() == OrderStatus.SUCCESS;
     }
 
     @Override
@@ -210,3 +239,4 @@ public class VietQrServiceImpl implements VietQrService {
     }
 
 }
+

@@ -65,48 +65,47 @@ function BeforePayment() {
     });
   };
 
-  // const checkPaymentStatus = async () => {
-  //   try {
-  // setCheckCount(prev => prev + 1);
-  // // Sử dụng method đúng từ service với description thay vì orderId
-  // const result = await vietQrService.checkPayment(description);
+  const checkPaymentStatus = async () => {
+    try {
+      setCheckCount(prev => prev + 1);
+      const result = await vietQrService.checkPayment(description);
       
-  //     // Kiểm tra thanh toán thành công trực tiếp
-  //     if (result === true || result === 'true' || String(result).toLowerCase() === 'true') {
-  //       setPaymentStatus('success');
-  //       setIsCheckingPayment(false);
+      // Kiểm tra thanh toán thành công trực tiếp
+      if (result === true || result === 'true' || String(result).toLowerCase() === 'true') {
+        setPaymentStatus('success');
+        setIsCheckingPayment(false);
         
-  //       if (pollingInterval.current) {
-  //         clearInterval(pollingInterval.current);
-  //         pollingInterval.current = null;
-  //       }
+        if (pollingInterval.current) {
+          if (typeof pollingInterval.current === 'function') {
+            pollingInterval.current();
+          } else {
+            clearInterval(pollingInterval.current);
+          }
+          pollingInterval.current = null;
+        }
         
-  //       if (!alertShown) {
-  //         setAlertShown(true);
-  //         showNotification('✅ Thanh toán VietQR thành công!', 'success');
+        if (!alertShown) {
+          setAlertShown(true);
+          showNotification('✅ Thanh toán VietQR thành công!', 'success');
           
-  //         // Lưu thông tin để chuyển sang PaymentResult
-  //         localStorage.setItem('paymentDescription', description);
-  //         localStorage.setItem('paymentAmount', (orderCreated?.finalAmount || order.finalAmount)?.toString() || '0');
+          // Lưu thông tin để chuyển sang PaymentResult
+          localStorage.setItem('paymentDescription', description);
+          localStorage.setItem('paymentAmount', (orderCreated?.finalAmount || order.finalAmount)?.toString() || '0');
           
-  //         setTimeout(() => {
-  //           navigate('/payment-result?status=success&description=' + encodeURIComponent(description));
-  //         }, 2000);
-  //       }
+          setTimeout(() => {
+            navigate('/payment-result?status=success&description=' + encodeURIComponent(description));
+          }, 2000);
+        }
         
-  //       return true;
-  //     }
+        return true;
+      }
       
-  //     // Thanh toán chưa thành công
-  // // ...
-  //     return false;
-      
-  //   } catch (error) {
-  // // ...
-  //     setError('Lỗi kiểm tra thanh toán: ' + error.message);
-  //     return false;
-  //   }
-  // };
+      return false;
+    } catch (error) {
+      return false;
+    }
+  };
+
 
   // If caller wants to skip to QR view (for testing or direct link), support it via
   // location.state.forceShowQr or URL query param ?showQr=1
@@ -434,10 +433,26 @@ function BeforePayment() {
                           // ...
                         }}
                         onError={(e) => {
-                          // ...
+                          if (e.target.dataset.triedFallback !== 'true') {
+                            e.target.dataset.triedFallback = 'true';
+                            const fallbackUrl = vietQrService.generatePublicQrUrl(
+                              BANK_INFO.PRIMARY_BANK.bankCode,
+                              BANK_INFO.PRIMARY_BANK.accountNumber,
+                              qrCodeData?.amount || order?.finalAmount,
+                              description,
+                              BANK_INFO.PRIMARY_BANK.accountName
+                            );
+                            if (fallbackUrl) {
+                              e.target.src = fallbackUrl;
+                              return;
+                            }
+                          }
                           e.target.style.display = 'none';
-                          e.target.nextSibling.style.display = 'flex';
+                          if (e.target.nextSibling) {
+                            e.target.nextSibling.style.display = 'flex';
+                          }
                         }}
+
                       />
                       <div className="qr-fallback" style={{ display: 'none' }}>
                         <p>⚠️ Không thể hiển thị QR Code</p>

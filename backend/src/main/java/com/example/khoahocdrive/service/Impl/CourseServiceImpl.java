@@ -357,52 +357,19 @@ public class CourseServiceImpl implements CourseService {
         return str;
     }
 
-    @Override
-    public ApiResponse<CourseResponse> getFullCourse() {
-        Optional<Course> optionalFullCourse = courseRepository.findFirstByIsFullCourseTrueOrderByIdDesc();
-        if (optionalFullCourse.isEmpty()) {
-            optionalFullCourse = courseRepository.findCourseBySlug("full-course");
+    private Course getOrCreateFullCourseEntity() {
+        Optional<Course> optional = courseRepository.findCourseBySlug("full-course");
+        if (optional.isEmpty()) {
+            optional = courseRepository.findFirstByIsFullCourseTrueOrderByIdDesc();
         }
-        
+
         Course fullCourse;
-        if (optionalFullCourse.isPresent()) {
-            fullCourse = optionalFullCourse.get();
-            boolean needSave = false;
-            if (fullCourse.getOldPrice() == null || fullCourse.getOldPrice().compareTo(new java.math.BigDecimal("10000000")) < 0) {
-                fullCourse.setOldPrice(new java.math.BigDecimal("100000000"));
-                needSave = true;
-            }
-            if (fullCourse.getNewPrice() == null || fullCourse.getNewPrice().compareTo(java.math.BigDecimal.ZERO) <= 0) {
-                fullCourse.setNewPrice(new java.math.BigDecimal("599000"));
-                needSave = true;
-            }
-            if (fullCourse.getLinkDrive() == null || fullCourse.getLinkDrive().trim().isEmpty()) {
-                fullCourse.setLinkDrive("https://drive.google.com/drive/folders/1RJ5xX2am3KivbbzzmEZ6Y3lkSB4CfFpN?usp=drive_link");
-                needSave = true;
-            }
-            if (fullCourse.getLinkDrive2() == null || fullCourse.getLinkDrive2().trim().isEmpty()) {
-                fullCourse.setLinkDrive2("https://drive.google.com/drive/folders/1RJ5xX2am3KivbbzzmEZ6Y3lkSB4CfFpN?usp=drive_link");
-                needSave = true;
-            }
-            if (fullCourse.getLinkTest() == null || fullCourse.getLinkTest().trim().isEmpty()) {
-                fullCourse.setLinkTest("https://drive.google.com/drive/folders/1RJ5xX2am3KivbbzzmEZ6Y3lkSB4CfFpN?usp=drive_link");
-                needSave = true;
-            }
-            if (fullCourse.getLinkTest2() == null || fullCourse.getLinkTest2().trim().isEmpty()) {
-                fullCourse.setLinkTest2("https://drive.google.com/drive/folders/1RJ5xX2am3KivbbzzmEZ6Y3lkSB4CfFpN?usp=drive_link");
-                needSave = true;
-            }
-            if (fullCourse.getDescription() == null || fullCourse.getDescription().trim().isEmpty()) {
-                fullCourse.setDescription("<h3>🎉 Bạn sẽ có gì trong gói Full Khóa Học?</h3>\n<ul>\n  <li><strong>1000+ Khóa học chọn lọc:</strong> Đầy đủ các lĩnh vực Lập trình, Ngoại ngữ, Thiết kế đồ họa, Marketing, Kinh doanh online...</li>\n  <li><strong>Hệ thống 2 Link Google Drive:</strong> Link chính và Link dự phòng đồng bộ tốc độ cao.</li>\n  <li><strong>Cập nhật miễn phí:</strong> Khóa học mới được upload và làm mới liên tục mỗi ngày.</li>\n  <li><strong>Xem online & Tải về offline:</strong> Thoải mái xem trực tuyến hoặc tải trọn bộ về máy cá nhân lưu trữ.</li>\n</ul>");
-                needSave = true;
-            }
-            if (needSave) {
-                fullCourse = courseRepository.save(fullCourse);
-            }
+        if (optional.isPresent()) {
+            fullCourse = optional.get();
         } else {
             fullCourse = Course.builder()
                 .name("Trọn Bộ Full Tất Cả Khóa Học Drive MH")
-                .description("<p>Gói Full Tất Cả Khóa Học tại KhoahocdriveMH - Sở hữu trọn đời kho tài liệu & video bài giảng chất lượng cao, cập nhật mới liên tục 24/7 trên Google Drive.</p>")
+                .description("<h3>🎉 Bạn sẽ có gì trong gói Full Khóa Học?</h3>\n<ul>\n  <li><strong>1000+ Khóa học chọn lọc:</strong> Đầy đủ các lĩnh vực Lập trình, Ngoại ngữ, Thiết kế đồ họa, Marketing, Kinh doanh online...</li>\n  <li><strong>Hệ thống 2 Link Google Drive:</strong> Link chính và Link dự phòng đồng bộ tốc độ cao.</li>\n  <li><strong>Cập nhật miễn phí:</strong> Khóa học mới được upload và làm mới liên tục mỗi ngày.</li>\n  <li><strong>Xem online & Tải về offline:</strong> Thoải mái xem trực tuyến hoặc tải trọn bộ về máy cá nhân lưu trữ.</li>\n</ul>")
                 .oldPrice(new java.math.BigDecimal("100000000"))
                 .newPrice(new java.math.BigDecimal("599000"))
                 .avatar("/bn.png")
@@ -415,7 +382,49 @@ public class CourseServiceImpl implements CourseService {
                 .build();
             fullCourse = courseRepository.save(fullCourse);
         }
-        
+
+        fullCourse.setSlug("full-course");
+        fullCourse.setIsFullCourse(true);
+        return fullCourse;
+    }
+
+    @Override
+    public ApiResponse<CourseResponse> getFullCourse() {
+        Course fullCourse = getOrCreateFullCourseEntity();
+        boolean needSave = false;
+
+        if (fullCourse.getOldPrice() == null || fullCourse.getOldPrice().compareTo(new java.math.BigDecimal("10000000")) < 0) {
+            fullCourse.setOldPrice(new java.math.BigDecimal("100000000"));
+            needSave = true;
+        }
+        if (fullCourse.getNewPrice() == null || fullCourse.getNewPrice().compareTo(java.math.BigDecimal.ZERO) <= 0) {
+            fullCourse.setNewPrice(new java.math.BigDecimal("599000"));
+            needSave = true;
+        }
+        if (fullCourse.getLinkDrive() == null || fullCourse.getLinkDrive().trim().isEmpty()) {
+            fullCourse.setLinkDrive("https://drive.google.com/drive/folders/1RJ5xX2am3KivbbzzmEZ6Y3lkSB4CfFpN?usp=drive_link");
+            needSave = true;
+        }
+        if (fullCourse.getLinkDrive2() == null || fullCourse.getLinkDrive2().trim().isEmpty()) {
+            fullCourse.setLinkDrive2("https://drive.google.com/drive/folders/1RJ5xX2am3KivbbzzmEZ6Y3lkSB4CfFpN?usp=drive_link");
+            needSave = true;
+        }
+        if (fullCourse.getLinkTest() == null || fullCourse.getLinkTest().trim().isEmpty()) {
+            fullCourse.setLinkTest("https://drive.google.com/drive/folders/1RJ5xX2am3KivbbzzmEZ6Y3lkSB4CfFpN?usp=drive_link");
+            needSave = true;
+        }
+        if (fullCourse.getLinkTest2() == null || fullCourse.getLinkTest2().trim().isEmpty()) {
+            fullCourse.setLinkTest2("https://drive.google.com/drive/folders/1RJ5xX2am3KivbbzzmEZ6Y3lkSB4CfFpN?usp=drive_link");
+            needSave = true;
+        }
+        if (fullCourse.getDescription() == null || fullCourse.getDescription().trim().isEmpty()) {
+            fullCourse.setDescription("<h3>🎉 Bạn sẽ có gì trong gói Full Khóa Học?</h3>\n<ul>\n  <li><strong>1000+ Khóa học chọn lọc:</strong> Đầy đủ các lĩnh vực Lập trình, Ngoại ngữ, Thiết kế đồ họa, Marketing, Kinh doanh online...</li>\n  <li><strong>Hệ thống 2 Link Google Drive:</strong> Link chính và Link dự phòng đồng bộ tốc độ cao.</li>\n  <li><strong>Cập nhật miễn phí:</strong> Khóa học mới được upload và làm mới liên tục mỗi ngày.</li>\n  <li><strong>Xem online & Tải về offline:</strong> Thoải mái xem trực tuyến hoặc tải trọn bộ về máy cá nhân lưu trữ.</li>\n</ul>");
+            needSave = true;
+        }
+        if (needSave) {
+            fullCourse = courseRepository.save(fullCourse);
+        }
+
         CourseResponse response = courseMapper.toResponse(fullCourse);
         return ApiResponse.<CourseResponse>builder()
                 .message("Get Full Course successfully")
@@ -425,64 +434,54 @@ public class CourseServiceImpl implements CourseService {
 
     @Override
     public ApiResponse<CourseResponse> updateFullCourse(MultipartFile file, CourseRequest request) throws Exception {
-        Optional<Course> optionalFullCourse = courseRepository.findFirstByIsFullCourseTrueOrderByIdDesc();
-        if (optionalFullCourse.isEmpty()) {
-            optionalFullCourse = courseRepository.findCourseBySlug("full-course");
-        }
-
-        Course fullCourse;
-        if (optionalFullCourse.isPresent()) {
-            fullCourse = optionalFullCourse.get();
-        } else {
-            fullCourse = new Course();
-            fullCourse.setSlug("full-course");
-            fullCourse.setIsFullCourse(true);
-            fullCourse.setAvatar("/bn.png");
-        }
+        Course fullCourse = getOrCreateFullCourseEntity();
 
         if (file != null && !file.isEmpty()) {
             String fileUrl = cloudinaryService.uploadImage(file);
             fullCourse.setAvatar(fileUrl);
         }
 
-        if (request.getName() != null && !request.getName().isBlank()) {
-            fullCourse.setName(request.getName());
-        }
-        if (request.getDescription() != null) {
-            fullCourse.setDescription(request.getDescription());
-        }
-        if (request.getOldPrice() != null && request.getOldPrice().compareTo(java.math.BigDecimal.ZERO) > 0) {
-            fullCourse.setOldPrice(request.getOldPrice());
-        } else if (fullCourse.getOldPrice() == null) {
-            fullCourse.setOldPrice(new java.math.BigDecimal("100000000"));
-        }
-        if (request.getNewPrice() != null && request.getNewPrice().compareTo(java.math.BigDecimal.ZERO) > 0) {
-            fullCourse.setNewPrice(request.getNewPrice());
-        } else if (fullCourse.getNewPrice() == null) {
-            fullCourse.setNewPrice(new java.math.BigDecimal("599000"));
-        }
-        if (request.getLinkDrive() != null && !request.getLinkDrive().isBlank()) {
-            fullCourse.setLinkDrive(request.getLinkDrive());
-        }
-        if (request.getLinkDrive2() != null && !request.getLinkDrive2().isBlank()) {
-            fullCourse.setLinkDrive2(request.getLinkDrive2());
-        }
-        if (request.getLinkTest() != null && !request.getLinkTest().isBlank()) {
-            fullCourse.setLinkTest(request.getLinkTest());
-        }
-        if (request.getLinkTest2() != null && !request.getLinkTest2().isBlank()) {
-            fullCourse.setLinkTest2(request.getLinkTest2());
-        }
-        if (request.getIsFullCourse() != null) {
-            fullCourse.setIsFullCourse(request.getIsFullCourse());
-        } else {
-            fullCourse.setIsFullCourse(true);
+        if (request != null) {
+            if (request.getName() != null && !request.getName().isBlank()) {
+                fullCourse.setName(request.getName());
+            }
+            if (request.getDescription() != null) {
+                fullCourse.setDescription(request.getDescription());
+            }
+            if (request.getOldPrice() != null && request.getOldPrice().compareTo(java.math.BigDecimal.ZERO) > 0) {
+                fullCourse.setOldPrice(request.getOldPrice());
+            } else if (fullCourse.getOldPrice() == null) {
+                fullCourse.setOldPrice(new java.math.BigDecimal("100000000"));
+            }
+            if (request.getNewPrice() != null && request.getNewPrice().compareTo(java.math.BigDecimal.ZERO) > 0) {
+                fullCourse.setNewPrice(request.getNewPrice());
+            } else if (fullCourse.getNewPrice() == null) {
+                fullCourse.setNewPrice(new java.math.BigDecimal("599000"));
+            }
+            if (request.getLinkDrive() != null && !request.getLinkDrive().isBlank()) {
+                fullCourse.setLinkDrive(request.getLinkDrive());
+            }
+            if (request.getLinkDrive2() != null && !request.getLinkDrive2().isBlank()) {
+                fullCourse.setLinkDrive2(request.getLinkDrive2());
+            }
+            if (request.getLinkTest() != null && !request.getLinkTest().isBlank()) {
+                fullCourse.setLinkTest(request.getLinkTest());
+            }
+            if (request.getLinkTest2() != null && !request.getLinkTest2().isBlank()) {
+                fullCourse.setLinkTest2(request.getLinkTest2());
+            }
+            if (request.getIsFullCourse() != null) {
+                fullCourse.setIsFullCourse(request.getIsFullCourse());
+            } else {
+                fullCourse.setIsFullCourse(true);
+            }
         }
 
         fullCourse = courseRepository.save(fullCourse);
+        CourseResponse response = courseMapper.toResponse(fullCourse);
         return ApiResponse.<CourseResponse>builder()
                 .message("Update Full Course successfully")
-                .data(courseMapper.toResponse(fullCourse))
+                .data(response)
                 .build();
     }
 

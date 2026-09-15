@@ -168,11 +168,6 @@ public class OrderServiceImpl implements OrderService {
             } else {
                 bill = optionalBill.get();
             }
-            // ✅ Nếu order đã SUCCESS thì coi như xong (idempotent)
-            if (order.getStatus() == OrderStatus.SUCCESS) {
-                bill.setProcessed(true);
-                billRepository.save(bill);
-            }
 
             // 2) Compare amount
             if (order.getTotalAmount().compareTo(bill.getAmount()) != 0 ) {
@@ -197,14 +192,27 @@ public class OrderServiceImpl implements OrderService {
                 log.error("Lỗi gửi email xác nhận thanh toán: {}", e.getMessage(), e);
             }
 
-            // 6) Grant Drive
+            // 6) Grant Drive - cấp quyền cả linkDrive VÀ linkDrive2 (Full Course có 2 link)
             String email = order.getEmail();
             for (OrderDetail detail : order.getOrderDetails()) {
-                String driveLink = detail.getCourse().getLinkDrive();
-                try {
-                    googleDriveService.grantPermissionViaHttp(driveLink, email);
-                } catch (Exception e) {
-                    log.error("Không thể cấp quyền cho link: {}, lỗi: {}", driveLink, e.getMessage(), e);
+                Course grantedCourse = detail.getCourse();
+                // Grant linkDrive chính
+                String driveLink = grantedCourse.getLinkDrive();
+                if (driveLink != null && !driveLink.isBlank()) {
+                    try {
+                        googleDriveService.grantPermissionViaHttp(driveLink, email);
+                    } catch (Exception e) {
+                        log.error("Không thể cấp quyền cho linkDrive: {}, lỗi: {}", driveLink, e.getMessage(), e);
+                    }
+                }
+                // Grant linkDrive2 dự phòng (Full Course)
+                String driveLink2 = grantedCourse.getLinkDrive2();
+                if (driveLink2 != null && !driveLink2.isBlank()) {
+                    try {
+                        googleDriveService.grantPermissionViaHttp(driveLink2, email);
+                    } catch (Exception e) {
+                        log.error("Không thể cấp quyền cho linkDrive2: {}, lỗi: {}", driveLink2, e.getMessage(), e);
+                    }
                 }
             }
 

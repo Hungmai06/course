@@ -18,6 +18,7 @@ const DEFAULT_FULL_COURSE = {
 
 const FullCourseBanner = () => {
   const [fullCourse, setFullCourse] = useState(DEFAULT_FULL_COURSE);
+  const [isVisible, setIsVisible] = useState(true);
   const navigate = useNavigate();
 
   useEffect(() => {
@@ -26,12 +27,19 @@ const FullCourseBanner = () => {
         const data = res.data?.data || res.data;
         if (data) {
           setFullCourse(prev => ({ ...prev, ...data }));
+          // Respect the isFullCourse toggle from Admin
+          if (data.isFullCourse !== undefined && data.isFullCourse !== null) {
+            setIsVisible(data.isFullCourse);
+          }
         }
       })
       .catch(err => {
         console.error('Error fetching full course banner:', err);
       });
   }, []);
+
+  // Don't render if admin toggled OFF
+  if (!isVisible) return null;
 
   const formatPrice = (p) => new Intl.NumberFormat('vi-VN').format(p || 0);
 

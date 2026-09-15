@@ -469,18 +469,22 @@ public class CourseServiceImpl implements CourseService {
         }
 
         if (request != null) {
+            // Name: only skip if truly null/blank
             if (request.getName() != null && !request.getName().isBlank()) {
                 config.setName(request.getName());
             }
+            // Description: save even if empty (user wants to clear it)
             if (request.getDescription() != null) {
                 config.setDescription(request.getDescription());
             }
+            // Prices: save if not null
             if (request.getOldPrice() != null) {
                 config.setOldPrice(request.getOldPrice());
             }
             if (request.getNewPrice() != null) {
                 config.setNewPrice(request.getNewPrice());
             }
+            // Links: ALWAYS save even empty string (user can clear links)
             if (request.getLinkDrive() != null) {
                 config.setLinkDrive(request.getLinkDrive());
             }
@@ -493,6 +497,7 @@ public class CourseServiceImpl implements CourseService {
             if (request.getLinkTest2() != null) {
                 config.setLinkTest2(request.getLinkTest2());
             }
+            // isFullCourse: ALWAYS save (controls banner ON/OFF)
             if (request.getIsFullCourse() != null) {
                 config.setIsFullCourse(request.getIsFullCourse());
             }

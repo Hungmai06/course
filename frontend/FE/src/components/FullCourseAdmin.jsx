@@ -33,15 +33,15 @@ const FullCourseAdmin = () => {
       const data = res.data?.data || res.data;
       if (data) {
         form.setFieldsValue({
-          name: data.name ?? 'Trọn Bộ Full Tất Cả Khóa Học Drive MH',
-          description: data.description ?? defaultDescription,
-          oldPrice: data.oldPrice ?? 100000000,
-          newPrice: data.newPrice ?? 599000,
-          linkDrive: data.linkDrive ?? '',
-          linkDrive2: data.linkDrive2 ?? '',
-          linkTest: data.linkTest ?? '',
-          linkTest2: data.linkTest2 ?? '',
-          isFullCourse: data.isFullCourse !== undefined ? data.isFullCourse : true,
+          name: data.name || 'Trọn Bộ Full Tất Cả Khóa Học Drive MH',
+          description: data.description || defaultDescription,
+          oldPrice: Number(data.oldPrice) || 100000000,
+          newPrice: Number(data.newPrice) || 599000,
+          linkDrive: data.linkDrive || '',
+          linkDrive2: data.linkDrive2 || '',
+          linkTest: data.linkTest || '',
+          linkTest2: data.linkTest2 || '',
+          isFullCourse: data.isFullCourse !== undefined && data.isFullCourse !== null ? data.isFullCourse : true,
         });
 
         setPreviewUrl(data.avatar || '/bn.png');
@@ -66,15 +66,15 @@ const FullCourseAdmin = () => {
     setSubmitting(true);
     try {
       const courseData = {
-        name: values.name ?? 'Trọn Bộ Full Tất Cả Khóa Học Drive MH',
-        description: values.description ?? defaultDescription,
-        oldPrice: values.oldPrice ? Number(values.oldPrice) : 100000000,
-        newPrice: values.newPrice ? Number(values.newPrice) : 599000,
-        linkDrive: values.linkDrive ?? '',
-        linkDrive2: values.linkDrive2 ?? '',
-        linkTest: values.linkTest ?? '',
-        linkTest2: values.linkTest2 ?? '',
-        isFullCourse: values.isFullCourse !== undefined ? values.isFullCourse : true,
+        name: values.name || 'Trọn Bộ Full Tất Cả Khóa Học Drive MH',
+        description: values.description || defaultDescription,
+        oldPrice: Number(values.oldPrice) || 100000000,
+        newPrice: Number(values.newPrice) || 599000,
+        linkDrive: values.linkDrive || '',
+        linkDrive2: values.linkDrive2 || '',
+        linkTest: values.linkTest || '',
+        linkTest2: values.linkTest2 || '',
+        isFullCourse: values.isFullCourse !== undefined && values.isFullCourse !== null ? values.isFullCourse : true,
       };
 
       let res;
@@ -95,15 +95,15 @@ const FullCourseAdmin = () => {
           setPreviewUrl(updated.avatar);
         }
         form.setFieldsValue({
-          name: updated.name ?? values.name,
-          description: updated.description ?? values.description,
-          oldPrice: updated.oldPrice ?? values.oldPrice,
-          newPrice: updated.newPrice ?? values.newPrice,
-          linkDrive: updated.linkDrive ?? values.linkDrive,
-          linkDrive2: updated.linkDrive2 ?? values.linkDrive2,
-          linkTest: updated.linkTest ?? values.linkTest,
-          linkTest2: updated.linkTest2 ?? values.linkTest2,
-          isFullCourse: updated.isFullCourse !== undefined ? updated.isFullCourse : true,
+          name: updated.name || values.name,
+          description: updated.description || values.description,
+          oldPrice: Number(updated.oldPrice) || values.oldPrice,
+          newPrice: Number(updated.newPrice) || values.newPrice,
+          linkDrive: updated.linkDrive !== undefined ? updated.linkDrive : values.linkDrive,
+          linkDrive2: updated.linkDrive2 !== undefined ? updated.linkDrive2 : values.linkDrive2,
+          linkTest: updated.linkTest !== undefined ? updated.linkTest : values.linkTest,
+          linkTest2: updated.linkTest2 !== undefined ? updated.linkTest2 : values.linkTest2,
+          isFullCourse: updated.isFullCourse !== undefined && updated.isFullCourse !== null ? updated.isFullCourse : true,
         });
       }
       setFileList([]);
@@ -202,7 +202,6 @@ const FullCourseAdmin = () => {
                     <Form.Item
                       name="linkDrive"
                       label={<span style={{ fontWeight: 700, color: '#1d4ed8' }}>🚀 Link Khóa Học 1</span>}
-                      rules={[{ required: true, message: 'Vui lòng nhập Link Khóa Học 1' }]}
                     >
                       <Input placeholder="https://drive.google.com/drive/folders/..." size="large" />
                     </Form.Item>
@@ -223,7 +222,6 @@ const FullCourseAdmin = () => {
                     <Form.Item
                       name="linkTest"
                       label={<span style={{ fontWeight: 700, color: '#047857' }}>🎬 Link Xem Thử 1</span>}
-                      rules={[{ required: true, message: 'Vui lòng nhập Link Xem Thử 1' }]}
                     >
                       <Input placeholder="https://drive.google.com/drive/folders/..." size="large" />
                     </Form.Item>

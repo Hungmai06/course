@@ -23,12 +23,12 @@ const FullCourseDetail = () => {
         if (data) {
           setCourse({
             ...data,
-            oldPrice: data.oldPrice && data.oldPrice > 0 ? data.oldPrice : 100000000,
-            newPrice: data.newPrice && data.newPrice > 0 ? data.newPrice : 599000,
-            linkDrive: data.linkDrive ?? '',
-            linkDrive2: data.linkDrive2 ?? '',
-            linkTest: data.linkTest ?? '',
-            linkTest2: data.linkTest2 ?? '',
+            oldPrice: data.oldPrice && Number(data.oldPrice) > 0 ? Number(data.oldPrice) : 100000000,
+            newPrice: data.newPrice && Number(data.newPrice) > 0 ? Number(data.newPrice) : 599000,
+            linkDrive: data.linkDrive || '',
+            linkDrive2: data.linkDrive2 || '',
+            linkTest: data.linkTest || '',
+            linkTest2: data.linkTest2 || '',
           });
         }
       })

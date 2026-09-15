@@ -189,10 +189,13 @@ export const courseService = {
   },
 
   // Cập nhật Full Khóa Học (Admin)
-  updateFullCourse: (formData) => {
-    return axios.put(`/course/full-course`, formData, {
+  updateFullCourse: (data) => {
+    if (data instanceof FormData) {
+      return axios.put(`/course/full-course`, data);
+    }
+    return axios.put(`/course/full-course`, data, {
       headers: {
-        'Content-Type': 'multipart/form-data'
+        'Content-Type': 'application/json'
       }
     });
   },

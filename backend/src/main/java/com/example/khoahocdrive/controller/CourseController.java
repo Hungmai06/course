@@ -100,10 +100,18 @@ public class CourseController {
 
     @PutMapping(value = "/full-course", consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
     @PreAuthorize("hasAnyRole('ADMIN')")
-    @Operation(summary = "Update Full Course detail")
+    @Operation(summary = "Update Full Course detail (Multipart)")
     public ApiResponse<CourseResponse> updateFullCourse(
             @RequestPart(value = "file", required = false) MultipartFile file,
             @RequestPart("data") CourseRequest request) throws Exception {
         return courseService.updateFullCourse(file, request);
+    }
+
+    @PutMapping(value = "/full-course", consumes = MediaType.APPLICATION_JSON_VALUE)
+    @PreAuthorize("hasAnyRole('ADMIN')")
+    @Operation(summary = "Update Full Course detail (JSON)")
+    public ApiResponse<CourseResponse> updateFullCourseJson(
+            @RequestBody CourseRequest request) throws Exception {
+        return courseService.updateFullCourse(null, request);
     }
 }

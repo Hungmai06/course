@@ -66,14 +66,9 @@ const FullCourseAdmin = () => {
   const onFinish = async (values) => {
     setSubmitting(true);
     try {
-      const formData = new FormData();
-      if (fileList.length > 0 && fileList[0].originFileObj) {
-        formData.append('file', fileList[0].originFileObj);
-      }
-
       const courseData = {
         name: values.name || 'Trọn Bộ Full Tất Cả Khóa Học Drive MH',
-        description: values.description !== undefined ? values.description : '',
+        description: values.description !== undefined && values.description !== null ? values.description : defaultDescription,
         oldPrice: values.oldPrice !== undefined && values.oldPrice !== null ? Number(values.oldPrice) : 100000000,
         newPrice: values.newPrice !== undefined && values.newPrice !== null ? Number(values.newPrice) : 599000,
         linkDrive: values.linkDrive || defaultDriveLink,
@@ -83,9 +78,16 @@ const FullCourseAdmin = () => {
         isFullCourse: values.isFullCourse !== undefined ? values.isFullCourse : true,
       };
 
-      formData.append('data', new Blob([JSON.stringify(courseData)], { type: 'application/json' }));
+      let res;
+      if (fileList.length > 0 && fileList[0].originFileObj) {
+        const formData = new FormData();
+        formData.append('file', fileList[0].originFileObj);
+        formData.append('data', new Blob([JSON.stringify(courseData)], { type: 'application/json' }));
+        res = await courseService.updateFullCourse(formData);
+      } else {
+        res = await courseService.updateFullCourse(courseData);
+      }
 
-      const res = await courseService.updateFullCourse(formData);
       const updated = res.data?.data || res.data;
 
       message.success('🎉 Cập nhật cài đặt Link & Nội dung Full Khóa Học thành công!');

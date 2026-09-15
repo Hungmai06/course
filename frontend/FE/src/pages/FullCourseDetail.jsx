@@ -69,8 +69,8 @@ const FullCourseDetail = () => {
       answer: "Có! Bạn sẽ nhận được 2 link Google Drive tốc độ cao được cập nhật liên tục 24/7 hoàn toàn miễn phí trọn đời."
     },
     {
-      question: "Sự khác biệt giữa Link Khóa Học 1 và Link Khóa Học 2 là gì?",
-      answer: "Link 1 là Server chính, Link 2 là Server dự phòng song song. Cả 2 link đều chứa đầy đủ 100% tài nguyên, giúp bạn truy cập liên tục không lo gián đoạn."
+      question: "Link Khóa Học 1 và Link Khóa Học 2 có gì khác nhau?",
+      answer: "Cả 2 link đều chứa đầy đủ 100% kho tài liệu và video bài giảng, giúp bạn có 2 đường dẫn truy cập song song tốc độ cao."
     }
   ];
 
@@ -162,7 +162,7 @@ const FullCourseDetail = () => {
               <div className="feature-item">
                 <img src="/assets/hoconlinetienloi.png" alt="Học Online" className="feature-icon" onError={(e) => { e.target.style.display = 'none'; }} />
                 <div className="feature-text">
-                  <div className="feature-name">Google Drive Dự Phòng</div>
+                  <div className="feature-name">2 Link Google Drive</div>
                   <div className="feature-subtitle">Tích hợp 2 Server Drive tốc độ cao</div>
                 </div>
               </div>

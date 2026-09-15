@@ -178,7 +178,7 @@ const FullCourseAdmin = () => {
                   <Col span={12}>
                     <Form.Item
                       name="linkDrive"
-                      label={<span style={{ fontWeight: 700, color: '#1d4ed8' }}>🚀 Link Khóa Học 1 (Drive chính)</span>}
+                      label={<span style={{ fontWeight: 700, color: '#1d4ed8' }}>🚀 Link Khóa Học 1</span>}
                       rules={[{ required: true, message: 'Vui lòng nhập Link Khóa Học 1' }]}
                     >
                       <Input placeholder="https://drive.google.com/drive/folders/..." size="large" />
@@ -188,7 +188,7 @@ const FullCourseAdmin = () => {
                   <Col span={12}>
                     <Form.Item
                       name="linkDrive2"
-                      label={<span style={{ fontWeight: 700, color: '#7e22ce' }}>🚀 Link Khóa Học 2 (Drive dự phòng)</span>}
+                      label={<span style={{ fontWeight: 700, color: '#7e22ce' }}>🚀 Link Khóa Học 2</span>}
                     >
                       <Input placeholder="https://drive.google.com/drive/folders/..." size="large" />
                     </Form.Item>

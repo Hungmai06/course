@@ -367,6 +367,11 @@ public class CourseServiceImpl implements CourseService {
         Course fullCourse;
         if (optionalFullCourse.isPresent()) {
             fullCourse = optionalFullCourse.get();
+            if (fullCourse.getOldPrice() == null || fullCourse.getOldPrice().compareTo(new java.math.BigDecimal("10000000")) < 0) {
+                fullCourse.setOldPrice(new java.math.BigDecimal("100000000"));
+                fullCourse.setNewPrice(new java.math.BigDecimal("599000"));
+                fullCourse = courseRepository.save(fullCourse);
+            }
         } else {
             fullCourse = Course.builder()
                 .name("Trọn Bộ Full Tất Cả Khóa Học Drive MH")

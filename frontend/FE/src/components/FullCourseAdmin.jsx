@@ -27,8 +27,8 @@ const FullCourseAdmin = () => {
         form.setFieldsValue({
           name: data.name || 'Trọn Bộ Full Tất Cả Khóa Học Drive MH',
           description: data.description || '',
-          oldPrice: data.oldPrice || 999000,
-          newPrice: data.newPrice || 199000,
+          oldPrice: data.oldPrice || 100000000,
+          newPrice: data.newPrice || 599000,
           linkDrive: data.linkDrive || '',
           linkDrive2: data.linkDrive2 || '',
           linkTest: data.linkTest || '',
@@ -65,8 +65,8 @@ const FullCourseAdmin = () => {
       const courseData = {
         name: values.name || 'Trọn Bộ Full Tất Cả Khóa Học Drive MH',
         description: values.description || '',
-        oldPrice: values.oldPrice || 999000,
-        newPrice: values.newPrice || 199000,
+        oldPrice: values.oldPrice !== undefined && values.oldPrice !== null ? Number(values.oldPrice) : 100000000,
+        newPrice: values.newPrice !== undefined && values.newPrice !== null ? Number(values.newPrice) : 599000,
         linkDrive: values.linkDrive || '',
         linkDrive2: values.linkDrive2 || '',
         linkTest: values.linkTest || '',
@@ -80,8 +80,21 @@ const FullCourseAdmin = () => {
       const updated = res.data?.data || res.data;
 
       message.success('🎉 Cập nhật cài đặt Link & Nội dung Full Khóa Học thành công!');
-      if (updated && updated.avatar) {
-        setPreviewUrl(updated.avatar);
+      if (updated) {
+        if (updated.avatar) {
+          setPreviewUrl(updated.avatar);
+        }
+        form.setFieldsValue({
+          name: updated.name || values.name,
+          description: updated.description || values.description,
+          oldPrice: updated.oldPrice || values.oldPrice,
+          newPrice: updated.newPrice || values.newPrice,
+          linkDrive: updated.linkDrive || values.linkDrive,
+          linkDrive2: updated.linkDrive2 || values.linkDrive2,
+          linkTest: updated.linkTest || values.linkTest,
+          linkTest2: updated.linkTest2 || values.linkTest2,
+          isFullCourse: updated.isFullCourse !== undefined ? updated.isFullCourse : true,
+        });
       }
       setFileList([]);
     } catch (err) {

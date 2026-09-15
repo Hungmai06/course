@@ -293,14 +293,64 @@ const FullCourseDetail = () => {
               </div>
             ) : (
               <div className="tab-panel access-panel">
-                <div className="access-info-card">
-                  <FaShieldAlt className="shield-icon" />
-                  <h4>Cam Kết Chất Lượng & Quyền Lợi VIP</h4>
-                  <ul>
-                    <li><FaCheckCircle className="icon-check" /> Quyền truy cập trọn đời không giới hạn thời gian.</li>
-                    <li><FaCheckCircle className="icon-check" /> Link Drive riêng biệt, băng thông cực nhanh.</li>
-                    <li><FaCheckCircle className="icon-check" /> Hỗ trợ kỹ thuật 24/7 qua Zalo & Facebook Fanpage.</li>
-                  </ul>
+                <div className="access-guide-content">
+                  <div className="guide-card">
+                    {/* Method 1 */}
+                    <div className="guide-method-section">
+                      <h4 className="method-title">👉 Cách 1: Nhận link học tự động qua Gmail (Khuyên dùng)</h4>
+                      
+                      <div className="guide-step">
+                        <div className="step-number">1</div>
+                        <div className="step-details">
+                          <h4>Kiểm tra Hộp thư đến (Inbox)</h4>
+                          <p>Sau khi thanh toán thành công, hệ thống sẽ tự động gửi email chứa liên kết Google Drive của trọn bộ khóa học vào Gmail của bạn ngay lập tức.</p>
+                        </div>
+                      </div>
+
+                      <div className="guide-step">
+                        <div className="step-number">2</div>
+                        <div className="step-details">
+                          <h4>Kiểm tra thư mục Thư rác (Spam) nếu không nhận được</h4>
+                          <p>Nếu không tìm thấy email trong <strong>Hộp thư đến</strong>, bạn vui lòng kiểm tra thư mục <strong>Thư rác (Spam)</strong> hoặc <strong>Quảng cáo (Promotions)</strong> như hướng dẫn bên dưới:</p>
+                          <div className="guide-image-container">
+                            <img 
+                              src="/assets/anhgmail.png" 
+                              alt="Hướng dẫn kiểm tra hộp thư đến và thư rác trong Gmail" 
+                              className="gmail-guide-img"
+                            />
+                          </div>
+                        </div>
+                      </div>
+                    </div>
+
+                    {/* Method 2 */}
+                    <div className="guide-method-section">
+                      <h4 className="method-title">👉 Cách 2: Học trực tiếp trên Website</h4>
+                      
+                      <div className="guide-step">
+                        <div className="step-number">1</div>
+                        <div className="step-details">
+                          <h4>Truy cập trang web</h4>
+                          <p>Đăng nhập vào tài khoản của bạn trên website và truy cập trang chi tiết <strong>Full Khóa Học</strong> hoặc trang <strong>Khóa học của tôi</strong>.</p>
+                        </div>
+                      </div>
+
+                      <div className="guide-step">
+                        <div className="step-number">2</div>
+                        <div className="step-details" style={{ width: '100%' }}>
+                          <h4>Lấy Link Google Drive trực tiếp</h4>
+                          <p>Sau khi thanh toán thành công, các nút <strong>"🚀 Link khóa học 1"</strong> và <strong>"🚀 Link khóa học 2"</strong> sẽ mở khóa để bạn truy cập Google Drive học và tải bài giảng bất cứ lúc nào.</p>
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+
+                  <div className="guide-support-box">
+                    <span className="support-icon">💬</span>
+                    <div className="support-text">
+                      <strong>Bạn cần hỗ trợ nhanh?</strong> Hãy nhấn nút <strong>"Trao đổi KH"</strong> ở phía trên hoặc liên hệ trực tiếp qua Zalo / Fanpage Facebook để được kỹ thuật viên hỗ trợ 24/7!
+                    </div>
+                  </div>
                 </div>
               </div>
             )}

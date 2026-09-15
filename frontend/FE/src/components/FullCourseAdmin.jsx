@@ -41,9 +41,8 @@ const FullCourseAdmin = () => {
           linkDrive2: data.linkDrive2 || '',
           linkTest: data.linkTest || '',
           linkTest2: data.linkTest2 || '',
-          isFullCourse: data.isFullCourse !== undefined && data.isFullCourse !== null ? data.isFullCourse : true,
+          isFullCourse: (data.isFullCourse !== undefined && data.isFullCourse !== null) ? data.isFullCourse : true,
         });
-
         setPreviewUrl(data.avatar || '/bn.png');
       }
     } catch (err) {
@@ -74,7 +73,7 @@ const FullCourseAdmin = () => {
         linkDrive2: values.linkDrive2 || '',
         linkTest: values.linkTest || '',
         linkTest2: values.linkTest2 || '',
-        isFullCourse: values.isFullCourse !== undefined && values.isFullCourse !== null ? values.isFullCourse : true,
+        isFullCourse: (values.isFullCourse !== undefined && values.isFullCourse !== null) ? values.isFullCourse : true,
       };
 
       let res;
@@ -90,6 +89,7 @@ const FullCourseAdmin = () => {
       const updated = res.data?.data || res.data;
 
       message.success('🎉 Cập nhật cài đặt Link & Nội dung Full Khóa Học thành công!');
+
       if (updated) {
         if (updated.avatar) {
           setPreviewUrl(updated.avatar);
@@ -103,7 +103,7 @@ const FullCourseAdmin = () => {
           linkDrive2: updated.linkDrive2 !== undefined ? updated.linkDrive2 : values.linkDrive2,
           linkTest: updated.linkTest !== undefined ? updated.linkTest : values.linkTest,
           linkTest2: updated.linkTest2 !== undefined ? updated.linkTest2 : values.linkTest2,
-          isFullCourse: updated.isFullCourse !== undefined && updated.isFullCourse !== null ? updated.isFullCourse : true,
+          isFullCourse: (updated.isFullCourse !== undefined && updated.isFullCourse !== null) ? updated.isFullCourse : values.isFullCourse,
         });
       }
       setFileList([]);
@@ -196,7 +196,7 @@ const FullCourseAdmin = () => {
             {/* RIGHT SIDE: 2 DRIVE LINKS, 2 TEST LINKS & DESCRIPTION */}
             <Col xs={24} md={16}>
               <Card title={<><LinkOutlined style={{ color: '#2563eb' }} /> Quản Lý 2 Link Khóa Học & 2 Link Xem Thử</>} size="small" style={{ marginBottom: 20 }}>
-                
+
                 <Row gutter={16}>
                   <Col span={12}>
                     <Form.Item

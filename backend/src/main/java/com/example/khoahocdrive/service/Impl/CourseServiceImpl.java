@@ -59,6 +59,9 @@ public class CourseServiceImpl implements CourseService {
         Course course = courseRepository.findById(id).orElseThrow(
                 ()-> new ResourceNotFoundException("Course not found")
         );
+        if (Boolean.TRUE.equals(course.getIsFullCourse()) || "full-course".equalsIgnoreCase(course.getSlug())) {
+            return getFullCourse();
+        }
         return ApiResponse.<CourseResponse>builder()
                 .message("Find Course By id")
                 .data(courseMapper.toResponse(course))
@@ -300,6 +303,9 @@ public class CourseServiceImpl implements CourseService {
 
     @Override
     public ApiResponse<CourseResponse> findCourseBySlug(String slug) {
+        if ("full-course".equalsIgnoreCase(slug)) {
+            return getFullCourse();
+        }
         Course course = courseRepository.findCourseBySlug(slug).orElseThrow(
                 () -> new ResourceNotFoundException("Course not found with slug: " + slug)
         );
@@ -380,12 +386,58 @@ public class CourseServiceImpl implements CourseService {
         });
     }
 
+    private Course getOrCreateFullCourseEntity(FullCourseConfig config) {
+        Optional<Course> courseOpt = courseRepository.findCourseBySlug("full-course");
+        if (courseOpt.isEmpty()) {
+            courseOpt = courseRepository.findFirstByIsFullCourseTrueOrderByIdDesc();
+        }
+        Course course;
+        if (courseOpt.isPresent()) {
+            course = courseOpt.get();
+        } else {
+            Author author = authorRepository.findAll().stream().findFirst().orElse(null);
+            Category category = categoryRepository.findAll().stream().findFirst().orElse(null);
+            course = Course.builder()
+                .name(config.getName())
+                .description(config.getDescription())
+                .oldPrice(config.getOldPrice())
+                .newPrice(config.getNewPrice())
+                .avatar(config.getAvatar())
+                .linkDrive(config.getLinkDrive())
+                .linkDrive2(config.getLinkDrive2())
+                .linkTest(config.getLinkTest())
+                .linkTest2(config.getLinkTest2())
+                .isFullCourse(true)
+                .slug("full-course")
+                .author(author)
+                .category(category)
+                .build();
+        }
+
+        course.setName(config.getName());
+        course.setDescription(config.getDescription());
+        course.setOldPrice(config.getOldPrice());
+        course.setNewPrice(config.getNewPrice());
+        if (config.getAvatar() != null && !config.getAvatar().isBlank()) {
+            course.setAvatar(config.getAvatar());
+        }
+        course.setLinkDrive(config.getLinkDrive());
+        course.setLinkDrive2(config.getLinkDrive2());
+        course.setLinkTest(config.getLinkTest());
+        course.setLinkTest2(config.getLinkTest2());
+        course.setIsFullCourse(true);
+        course.setSlug("full-course");
+
+        return courseRepository.save(course);
+    }
+
     @Override
     public ApiResponse<CourseResponse> getFullCourse() {
         FullCourseConfig config = getOrCreateConfig();
+        Course courseEntity = getOrCreateFullCourseEntity(config);
 
         CourseResponse response = CourseResponse.builder()
-                .id(config.getId())
+                .id(courseEntity.getId())
                 .name(config.getName())
                 .description(config.getDescription())
                 .oldPrice(config.getOldPrice())
@@ -445,30 +497,10 @@ public class CourseServiceImpl implements CourseService {
         }
 
         config = fullCourseConfigRepository.save(config);
-
-        // Also sync Course table record so cart & orders continue working seamlessly
-        Optional<Course> courseOpt = courseRepository.findCourseBySlug("full-course");
-        if (courseOpt.isEmpty()) {
-            courseOpt = courseRepository.findFirstByIsFullCourseTrueOrderByIdDesc();
-        }
-        if (courseOpt.isPresent()) {
-            Course c = courseOpt.get();
-            c.setName(config.getName());
-            c.setOldPrice(config.getOldPrice());
-            c.setNewPrice(config.getNewPrice());
-            c.setLinkDrive(config.getLinkDrive());
-            c.setLinkDrive2(config.getLinkDrive2());
-            c.setLinkTest(config.getLinkTest());
-            c.setLinkTest2(config.getLinkTest2());
-            c.setDescription(config.getDescription());
-            if (config.getAvatar() != null && !config.getAvatar().isEmpty()) {
-                c.setAvatar(config.getAvatar());
-            }
-            courseRepository.save(c);
-        }
+        Course courseEntity = getOrCreateFullCourseEntity(config);
 
         CourseResponse response = CourseResponse.builder()
-                .id(config.getId())
+                .id(courseEntity.getId())
                 .name(config.getName())
                 .description(config.getDescription())
                 .oldPrice(config.getOldPrice())

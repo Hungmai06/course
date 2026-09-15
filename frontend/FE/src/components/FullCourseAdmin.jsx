@@ -38,10 +38,10 @@ const FullCourseAdmin = () => {
           description: data.description || defaultDescription,
           oldPrice: data.oldPrice || 100000000,
           newPrice: data.newPrice || 599000,
-          linkDrive: data.linkDrive !== undefined && data.linkDrive !== null ? data.linkDrive : defaultDriveLink,
-          linkDrive2: data.linkDrive2 !== undefined && data.linkDrive2 !== null ? data.linkDrive2 : defaultDriveLink,
-          linkTest: data.linkTest !== undefined && data.linkTest !== null ? data.linkTest : defaultDriveLink,
-          linkTest2: data.linkTest2 !== undefined && data.linkTest2 !== null ? data.linkTest2 : defaultDriveLink,
+          linkDrive: data.linkDrive || defaultDriveLink,
+          linkDrive2: data.linkDrive2 || defaultDriveLink,
+          linkTest: data.linkTest || defaultDriveLink,
+          linkTest2: data.linkTest2 || defaultDriveLink,
           isFullCourse: data.isFullCourse !== undefined ? data.isFullCourse : true,
         });
 
@@ -68,13 +68,13 @@ const FullCourseAdmin = () => {
     try {
       const courseData = {
         name: values.name || 'Trọn Bộ Full Tất Cả Khóa Học Drive MH',
-        description: values.description !== undefined && values.description !== null ? values.description : defaultDescription,
-        oldPrice: values.oldPrice !== undefined && values.oldPrice !== null ? Number(values.oldPrice) : 100000000,
-        newPrice: values.newPrice !== undefined && values.newPrice !== null ? Number(values.newPrice) : 599000,
-        linkDrive: values.linkDrive !== undefined ? values.linkDrive : '',
-        linkDrive2: values.linkDrive2 !== undefined ? values.linkDrive2 : '',
-        linkTest: values.linkTest !== undefined ? values.linkTest : '',
-        linkTest2: values.linkTest2 !== undefined ? values.linkTest2 : '',
+        description: values.description || defaultDescription,
+        oldPrice: values.oldPrice ? Number(values.oldPrice) : 100000000,
+        newPrice: values.newPrice ? Number(values.newPrice) : 599000,
+        linkDrive: values.linkDrive || defaultDriveLink,
+        linkDrive2: values.linkDrive2 || defaultDriveLink,
+        linkTest: values.linkTest || defaultDriveLink,
+        linkTest2: values.linkTest2 || defaultDriveLink,
         isFullCourse: values.isFullCourse !== undefined ? values.isFullCourse : true,
       };
 
@@ -97,13 +97,13 @@ const FullCourseAdmin = () => {
         }
         form.setFieldsValue({
           name: updated.name || values.name,
-          description: updated.description !== undefined ? updated.description : values.description,
+          description: updated.description || values.description,
           oldPrice: updated.oldPrice || values.oldPrice,
           newPrice: updated.newPrice || values.newPrice,
-          linkDrive: updated.linkDrive !== undefined ? updated.linkDrive : values.linkDrive,
-          linkDrive2: updated.linkDrive2 !== undefined ? updated.linkDrive2 : values.linkDrive2,
-          linkTest: updated.linkTest !== undefined ? updated.linkTest : values.linkTest,
-          linkTest2: updated.linkTest2 !== undefined ? updated.linkTest2 : values.linkTest2,
+          linkDrive: updated.linkDrive || values.linkDrive,
+          linkDrive2: updated.linkDrive2 || values.linkDrive2,
+          linkTest: updated.linkTest || values.linkTest,
+          linkTest2: updated.linkTest2 || values.linkTest2,
           isFullCourse: updated.isFullCourse !== undefined ? updated.isFullCourse : true,
         });
       }

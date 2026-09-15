@@ -27,10 +27,10 @@ const FullCourseDetail = () => {
             ...data,
             oldPrice: data.oldPrice && data.oldPrice > 0 ? data.oldPrice : 100000000,
             newPrice: data.newPrice && data.newPrice > 0 ? data.newPrice : 599000,
-            linkDrive: data.linkDrive !== undefined && data.linkDrive !== null ? data.linkDrive : '',
-            linkDrive2: data.linkDrive2 !== undefined && data.linkDrive2 !== null ? data.linkDrive2 : '',
-            linkTest: data.linkTest !== undefined && data.linkTest !== null ? data.linkTest : '',
-            linkTest2: data.linkTest2 !== undefined && data.linkTest2 !== null ? data.linkTest2 : '',
+            linkDrive: data.linkDrive || defaultDriveLink,
+            linkDrive2: data.linkDrive2 || defaultDriveLink,
+            linkTest: data.linkTest || defaultDriveLink,
+            linkTest2: data.linkTest2 || defaultDriveLink,
           });
         }
       })

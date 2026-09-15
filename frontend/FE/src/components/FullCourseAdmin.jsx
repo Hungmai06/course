@@ -66,7 +66,7 @@ const FullCourseAdmin = () => {
 
       const courseData = {
         name: values.name || 'Trọn Bộ Full Tất Cả Khóa Học Drive MH',
-        description: values.description || '',
+        description: values.description !== undefined ? values.description : '',
         oldPrice: values.oldPrice !== undefined && values.oldPrice !== null ? Number(values.oldPrice) : 100000000,
         newPrice: values.newPrice !== undefined && values.newPrice !== null ? Number(values.newPrice) : 599000,
         linkDrive: values.linkDrive || defaultDriveLink,
@@ -88,7 +88,7 @@ const FullCourseAdmin = () => {
         }
         form.setFieldsValue({
           name: updated.name || values.name,
-          description: updated.description || values.description,
+          description: updated.description !== undefined ? updated.description : values.description,
           oldPrice: updated.oldPrice || values.oldPrice,
           newPrice: updated.newPrice || values.newPrice,
           linkDrive: updated.linkDrive || values.linkDrive || defaultDriveLink,

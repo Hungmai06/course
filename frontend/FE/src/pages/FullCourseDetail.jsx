@@ -43,6 +43,31 @@ const FullCourseDetail = () => {
 
   const formatPrice = (price) => new Intl.NumberFormat('vi-VN').format(price || 0);
 
+  const formatDescription = (desc) => {
+    if (!desc || !desc.trim()) {
+      return `
+        <h3>🎉 Bạn sẽ có gì trong gói Full Khóa Học?</h3>
+        <ul>
+          <li><strong>1000+ Khóa học chọn lọc:</strong> Đầy đủ các lĩnh vực Lập trình, Ngoại ngữ, Thiết kế đồ họa, Marketing, Kinh doanh online...</li>
+          <li><strong>Hệ thống 2 Link Google Drive:</strong> Link chính và Link dự phòng đồng bộ tốc độ cao.</li>
+          <li><strong>Cập nhật miễn phí:</strong> Khóa học mới được upload và làm mới liên tục mỗi ngày.</li>
+          <li><strong>Xem online & Tải về offline:</strong> Thoải mái xem trực tuyến hoặc tải trọn bộ về máy cá nhân lưu trữ.</li>
+        </ul>
+      `;
+    }
+    // If desc contains HTML tags (like <p>, <h3>, <ul>, <br>), return directly
+    if (/<[a-z][\s\S]*>/i.test(desc)) {
+      return desc;
+    }
+    // Otherwise convert plain text lines to HTML paragraphs
+    return desc
+      .split('\n')
+      .map(line => line.trim())
+      .filter(line => line.length > 0)
+      .map(line => `<p style="margin-bottom: 12px; line-height: 1.7;">${line}</p>`)
+      .join('');
+  };
+
   const handleAddToCart = async () => {
     if (!course) return;
     try {
@@ -269,15 +294,7 @@ const FullCourseDetail = () => {
                 <div 
                   className="course-description-html"
                   dangerouslySetInnerHTML={{ 
-                    __html: course.description || `
-                      <h3>🎉 Bạn sẽ có gì trong gói Full Khóa Học?</h3>
-                      <ul>
-                        <li><strong>1000+ Khóa học chọn lọc:</strong> Đầy đủ các lĩnh vực Lập trình, Ngoại ngữ, Thiết kế đồ họa, Marketing, Kinh doanh online...</li>
-                        <li><strong>Hệ thống 2 Link Google Drive:</strong> Link chính và Link dự phòng đồng bộ tốc độ cao.</li>
-                        <li><strong>Cập nhật miễn phí:</strong> Khóa học mới được upload và làm mới liên tục mỗi ngày.</li>
-                        <li><strong>Xem online & Tải về offline:</strong> Thoải mái xem trực tuyến hoặc tải trọn bộ về máy cá nhân lưu trữ.</li>
-                      </ul>
-                    ` 
+                    __html: formatDescription(course.description)
                   }} 
                 />
 

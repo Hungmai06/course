@@ -444,7 +444,7 @@ public class CourseServiceImpl implements CourseService {
         if (request.getName() != null && !request.getName().isBlank()) {
             fullCourse.setName(request.getName());
         }
-        if (request.getDescription() != null && !request.getDescription().isBlank()) {
+        if (request.getDescription() != null) {
             fullCourse.setDescription(request.getDescription());
         }
         if (request.getOldPrice() != null && request.getOldPrice().compareTo(java.math.BigDecimal.ZERO) > 0) {

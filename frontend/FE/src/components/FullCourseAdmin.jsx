@@ -18,7 +18,6 @@ const FullCourseAdmin = () => {
     fetchFullCourse();
   }, []);
 
-  const defaultDriveLink = "https://drive.google.com/drive/folders/1RJ5xX2am3KivbbzzmEZ6Y3lkSB4CfFpN?usp=drive_link";
   const defaultDescription = `<h3>🎉 Bạn sẽ có gì trong gói Full Khóa Học?</h3>
 <ul>
   <li><strong>1000+ Khóa học chọn lọc:</strong> Đầy đủ các lĩnh vực Lập trình, Ngoại ngữ, Thiết kế đồ họa, Marketing, Kinh doanh online...</li>
@@ -34,14 +33,14 @@ const FullCourseAdmin = () => {
       const data = res.data?.data || res.data;
       if (data) {
         form.setFieldsValue({
-          name: data.name || 'Trọn Bộ Full Tất Cả Khóa Học Drive MH',
-          description: data.description || defaultDescription,
-          oldPrice: data.oldPrice || 100000000,
-          newPrice: data.newPrice || 599000,
-          linkDrive: data.linkDrive || defaultDriveLink,
-          linkDrive2: data.linkDrive2 || defaultDriveLink,
-          linkTest: data.linkTest || defaultDriveLink,
-          linkTest2: data.linkTest2 || defaultDriveLink,
+          name: data.name ?? 'Trọn Bộ Full Tất Cả Khóa Học Drive MH',
+          description: data.description ?? defaultDescription,
+          oldPrice: data.oldPrice ?? 100000000,
+          newPrice: data.newPrice ?? 599000,
+          linkDrive: data.linkDrive ?? '',
+          linkDrive2: data.linkDrive2 ?? '',
+          linkTest: data.linkTest ?? '',
+          linkTest2: data.linkTest2 ?? '',
           isFullCourse: data.isFullCourse !== undefined ? data.isFullCourse : true,
         });
 
@@ -67,14 +66,14 @@ const FullCourseAdmin = () => {
     setSubmitting(true);
     try {
       const courseData = {
-        name: values.name || 'Trọn Bộ Full Tất Cả Khóa Học Drive MH',
-        description: values.description || defaultDescription,
+        name: values.name ?? 'Trọn Bộ Full Tất Cả Khóa Học Drive MH',
+        description: values.description ?? defaultDescription,
         oldPrice: values.oldPrice ? Number(values.oldPrice) : 100000000,
         newPrice: values.newPrice ? Number(values.newPrice) : 599000,
-        linkDrive: values.linkDrive || defaultDriveLink,
-        linkDrive2: values.linkDrive2 || defaultDriveLink,
-        linkTest: values.linkTest || defaultDriveLink,
-        linkTest2: values.linkTest2 || defaultDriveLink,
+        linkDrive: values.linkDrive ?? '',
+        linkDrive2: values.linkDrive2 ?? '',
+        linkTest: values.linkTest ?? '',
+        linkTest2: values.linkTest2 ?? '',
         isFullCourse: values.isFullCourse !== undefined ? values.isFullCourse : true,
       };
 
@@ -96,14 +95,14 @@ const FullCourseAdmin = () => {
           setPreviewUrl(updated.avatar);
         }
         form.setFieldsValue({
-          name: updated.name || values.name,
-          description: updated.description || values.description,
-          oldPrice: updated.oldPrice || values.oldPrice,
-          newPrice: updated.newPrice || values.newPrice,
-          linkDrive: updated.linkDrive || values.linkDrive,
-          linkDrive2: updated.linkDrive2 || values.linkDrive2,
-          linkTest: updated.linkTest || values.linkTest,
-          linkTest2: updated.linkTest2 || values.linkTest2,
+          name: updated.name ?? values.name,
+          description: updated.description ?? values.description,
+          oldPrice: updated.oldPrice ?? values.oldPrice,
+          newPrice: updated.newPrice ?? values.newPrice,
+          linkDrive: updated.linkDrive ?? values.linkDrive,
+          linkDrive2: updated.linkDrive2 ?? values.linkDrive2,
+          linkTest: updated.linkTest ?? values.linkTest,
+          linkTest2: updated.linkTest2 ?? values.linkTest2,
           isFullCourse: updated.isFullCourse !== undefined ? updated.isFullCourse : true,
         });
       }

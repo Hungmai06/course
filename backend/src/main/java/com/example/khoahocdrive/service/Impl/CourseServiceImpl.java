@@ -379,10 +379,10 @@ public class CourseServiceImpl implements CourseService {
             .oldPrice(new java.math.BigDecimal("100000000"))
             .newPrice(new java.math.BigDecimal("599000"))
             .avatar("/bn.png")
-            .linkDrive("https://drive.google.com/drive/folders/1RJ5xX2am3KivbbzzmEZ6Y3lkSB4CfFpN?usp=drive_link")
-            .linkDrive2("https://drive.google.com/drive/folders/1RJ5xX2am3KivbbzzmEZ6Y3lkSB4CfFpN?usp=drive_link")
-            .linkTest("https://drive.google.com/drive/folders/1RJ5xX2am3KivbbzzmEZ6Y3lkSB4CfFpN?usp=drive_link")
-            .linkTest2("https://drive.google.com/drive/folders/1RJ5xX2am3KivbbzzmEZ6Y3lkSB4CfFpN?usp=drive_link")
+            .linkDrive("")
+            .linkDrive2("")
+            .linkTest("")
+            .linkTest2("")
             .isFullCourse(true)
             .build();
         return fullCourseConfigRepository.saveAndFlush(config);

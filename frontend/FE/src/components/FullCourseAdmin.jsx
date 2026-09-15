@@ -33,15 +33,15 @@ const FullCourseAdmin = () => {
       const data = res.data?.data || res.data;
       if (data) {
         form.setFieldsValue({
-          name: data.name || 'Trọn Bộ Full Tất Cả Khóa Học Drive MH',
-          description: data.description || defaultDescription,
-          oldPrice: Number(data.oldPrice) || 100000000,
-          newPrice: Number(data.newPrice) || 599000,
+          name: (data.name !== undefined && data.name !== null && data.name !== '') ? data.name : 'Trọn Bộ Full Tất Cả Khóa Học Drive MH',
+          description: (data.description !== undefined && data.description !== null) ? data.description : defaultDescription,
+          oldPrice: (data.oldPrice !== undefined && data.oldPrice !== null) ? Number(data.oldPrice) : 100000000,
+          newPrice: (data.newPrice !== undefined && data.newPrice !== null) ? Number(data.newPrice) : 599000,
           linkDrive: data.linkDrive || '',
           linkDrive2: data.linkDrive2 || '',
           linkTest: data.linkTest || '',
           linkTest2: data.linkTest2 || '',
-          isFullCourse: (data.isFullCourse !== undefined && data.isFullCourse !== null) ? data.isFullCourse : true,
+          isFullCourse: (data.isFullCourse !== undefined && data.isFullCourse !== null) ? Boolean(data.isFullCourse) : true,
         });
         setPreviewUrl(data.avatar || '/bn.png');
       }
@@ -66,14 +66,14 @@ const FullCourseAdmin = () => {
     try {
       const courseData = {
         name: values.name || 'Trọn Bộ Full Tất Cả Khóa Học Drive MH',
-        description: values.description || defaultDescription,
-        oldPrice: Number(values.oldPrice) || 100000000,
-        newPrice: Number(values.newPrice) || 599000,
+        description: values.description !== undefined ? values.description : defaultDescription,
+        oldPrice: values.oldPrice !== undefined ? Number(values.oldPrice) : 100000000,
+        newPrice: values.newPrice !== undefined ? Number(values.newPrice) : 599000,
         linkDrive: values.linkDrive || '',
         linkDrive2: values.linkDrive2 || '',
         linkTest: values.linkTest || '',
         linkTest2: values.linkTest2 || '',
-        isFullCourse: (values.isFullCourse !== undefined && values.isFullCourse !== null) ? values.isFullCourse : true,
+        isFullCourse: values.isFullCourse !== undefined ? Boolean(values.isFullCourse) : true,
       };
 
       let res;
@@ -95,15 +95,15 @@ const FullCourseAdmin = () => {
           setPreviewUrl(updated.avatar);
         }
         form.setFieldsValue({
-          name: updated.name || values.name,
-          description: updated.description || values.description,
-          oldPrice: Number(updated.oldPrice) || values.oldPrice,
-          newPrice: Number(updated.newPrice) || values.newPrice,
+          name: updated.name !== undefined ? updated.name : values.name,
+          description: updated.description !== undefined ? updated.description : values.description,
+          oldPrice: updated.oldPrice !== undefined ? Number(updated.oldPrice) : values.oldPrice,
+          newPrice: updated.newPrice !== undefined ? Number(updated.newPrice) : values.newPrice,
           linkDrive: updated.linkDrive !== undefined ? updated.linkDrive : values.linkDrive,
           linkDrive2: updated.linkDrive2 !== undefined ? updated.linkDrive2 : values.linkDrive2,
           linkTest: updated.linkTest !== undefined ? updated.linkTest : values.linkTest,
           linkTest2: updated.linkTest2 !== undefined ? updated.linkTest2 : values.linkTest2,
-          isFullCourse: (updated.isFullCourse !== undefined && updated.isFullCourse !== null) ? updated.isFullCourse : values.isFullCourse,
+          isFullCourse: updated.isFullCourse !== undefined ? Boolean(updated.isFullCourse) : values.isFullCourse,
         });
       }
       setFileList([]);

@@ -368,6 +368,10 @@ public class CourseServiceImpl implements CourseService {
     }
 
     private FullCourseConfig getOrCreateConfig() {
+        Optional<FullCourseConfig> configOpt = fullCourseConfigRepository.findById(1L);
+        if (configOpt.isPresent()) {
+            return configOpt.get();
+        }
         List<FullCourseConfig> configs = fullCourseConfigRepository.findAll();
         if (!configs.isEmpty()) {
             return configs.get(0);
@@ -430,10 +434,11 @@ public class CourseServiceImpl implements CourseService {
         course.setIsFullCourse(true);
         course.setSlug("full-course");
 
-        return courseRepository.save(course);
+        return courseRepository.saveAndFlush(course);
     }
 
     @Override
+    @Transactional
     public ApiResponse<CourseResponse> getFullCourse() {
         FullCourseConfig config = getOrCreateConfig();
         Course courseEntity = getOrCreateFullCourseEntity(config);
@@ -460,6 +465,7 @@ public class CourseServiceImpl implements CourseService {
     }
 
     @Override
+    @Transactional
     public ApiResponse<CourseResponse> updateFullCourse(MultipartFile file, CourseRequest request) throws Exception {
         FullCourseConfig config = getOrCreateConfig();
 

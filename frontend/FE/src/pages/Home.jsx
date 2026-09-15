@@ -2,6 +2,7 @@ import React, { useState, useEffect } from "react";
 import HomeCategorySection from "../components/HomeCategorySection";
 import CategoryCoursesSection from "../components/CategoryCoursesSection";
 import Navbar from "../components/Navbar";
+import FullCourseBanner from "../components/FullCourseBanner";
 import Footer from "../components/Footer";
 import { categoryService } from "../services/categoryService";
 import "./Home.css";
@@ -22,6 +23,7 @@ const Home = () => {
   return (
     <div>
       <Navbar />
+      <FullCourseBanner />
       <HomeCategorySection />
 
       {categories.map((category) => (

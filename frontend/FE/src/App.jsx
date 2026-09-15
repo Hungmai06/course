@@ -27,6 +27,8 @@ import FreeCourses from "./pages/FreeCourses";
 import FreeCourseDetail from "./pages/FreeCourseDetail";
 import ReviewSach from "./pages/ReviewSach";
 
+import FullCourseDetail from "./pages/FullCourseDetail";
+
 function ScrollToTop() {
   const { pathname, search } = useLocation();
   useEffect(() => {
@@ -72,6 +74,7 @@ function App() {
           <Route path="/combo" element={<Combo />} />
           <Route path="/khoa-hoc-free" element={<FreeCourses />} />
           <Route path="/khoa-hoc-free/:id" element={<FreeCourseDetail />} />
+          <Route path="/full-course" element={<FullCourseDetail />} />
           <Route path="/48-ngay-lay-goc-tieng-anh-free" element={<FreeCourses />} />
           <Route path="/review-sach" element={<ReviewSach />} />
           {/* Protected routes - chỉ dành cho admin */}

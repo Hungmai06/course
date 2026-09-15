@@ -28,7 +28,10 @@ public class CourseRequest {
     private BigDecimal oldPrice;
     private BigDecimal newPrice;
     private String linkDrive;
+    private String linkDrive2;
     private String linkTest;
+    private String linkTest2;
+    private Boolean isFullCourse;
     private String authorName;
     private String categoryName;
     private String slug;

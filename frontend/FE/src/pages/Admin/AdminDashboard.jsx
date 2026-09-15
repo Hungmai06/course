@@ -14,6 +14,7 @@ import Course from '../../components/Course';
 import FreeCourse from '../../components/FreeCourse';
 import Bill from '../../components/Bill';
 import Item from '../../components/Item';
+import FullCourseAdmin from '../../components/FullCourseAdmin';
 import { Layout, Menu, Row, Col, Card, Statistic, Table, Button, Space } from 'antd';
 import { Link } from 'react-router-dom';
 import {
@@ -27,12 +28,14 @@ import {
   ShoppingCartOutlined,
   AppstoreOutlined,
   HomeOutlined,
+  ThunderboltOutlined,
 } from '@ant-design/icons';
 
 const { Header, Sider, Content } = Layout;
 
 const sidebarItems = [
   { key: '', label: 'Thống kê', icon: <DashboardOutlined /> },
+  { key: 'FullCourse', label: 'Full Khóa Học', icon: <ThunderboltOutlined /> },
   { key: 'Category', label: 'Danh mục', icon: <TagsOutlined /> },
   { key: 'Author', label: 'Tác giả', icon: <TeamOutlined /> },
   { key: 'Course', label: 'Khóa học', icon: <BookOutlined /> },
@@ -358,6 +361,7 @@ export default function AdminDashboard() {
             </>
           )}
 
+          {selectedSection === 'FullCourse' && <FullCourseAdmin />}
           {selectedSection === 'Author' && <Author />}
           {selectedSection === 'User' && <User />}
           {selectedSection === 'Category' && <Category />}

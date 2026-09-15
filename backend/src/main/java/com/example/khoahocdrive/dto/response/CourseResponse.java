@@ -24,7 +24,10 @@ public class CourseResponse {
     private Float ratingCount;
     private Float studentCount;
     private String linkDrive;
+    private String linkDrive2;
     private String linkTest;
+    private String linkTest2;
+    private Boolean isFullCourse;
     private String nameAuthor;
     private String nameCategory;
     private String slug;

@@ -15,6 +15,7 @@ import java.util.Optional;
 public interface CourseRepository extends JpaRepository<Course,Long>, JpaSpecificationExecutor<Course> {
     Optional<Course> findCourseByName(String name);
     Optional<Course> findCourseBySlug(String slug);
+    Optional<Course> findFirstByIsFullCourseTrueOrderByIdDesc();
 
     // ✅ Fix N+1 cho getAll(page,size)
     @Override

@@ -183,6 +183,20 @@ export const courseService = {
     return axios.post(`/course/sync-slugs`);
   },
 
+  // Lấy thông tin Full Khóa Học
+  getFullCourse: () => {
+    return axios.get(`/course/full-course`);
+  },
+
+  // Cập nhật Full Khóa Học (Admin)
+  updateFullCourse: (formData) => {
+    return axios.put(`/course/full-course`, formData, {
+      headers: {
+        'Content-Type': 'multipart/form-data'
+      }
+    });
+  },
+
   // Xóa tất cả course cache
   clearCache: () => {
     cacheService.removeNamespace('courses_all');

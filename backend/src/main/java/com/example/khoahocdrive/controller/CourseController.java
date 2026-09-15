@@ -91,4 +91,19 @@ public class CourseController {
     public ApiResponse<String> syncSlugs(){
         return courseService.syncSlugs();
     }
+
+    @GetMapping("/full-course")
+    @Operation(summary = "Get Full Course detail")
+    public ApiResponse<CourseResponse> getFullCourse(){
+        return courseService.getFullCourse();
+    }
+
+    @PutMapping(value = "/full-course", consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
+    @PreAuthorize("hasAnyRole('ADMIN')")
+    @Operation(summary = "Update Full Course detail")
+    public ApiResponse<CourseResponse> updateFullCourse(
+            @RequestPart(value = "file", required = false) MultipartFile file,
+            @RequestPart("data") CourseRequest request) throws Exception {
+        return courseService.updateFullCourse(file, request);
+    }
 }

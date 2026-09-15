@@ -90,7 +90,10 @@ public class CourseServiceImpl implements CourseService {
                .name(request.getName())
                .author(author)
                .linkDrive(request.getLinkDrive())
+               .linkDrive2(request.getLinkDrive2())
                .linkTest(request.getLinkTest())
+               .linkTest2(request.getLinkTest2())
+               .isFullCourse(request.getIsFullCourse() != null ? request.getIsFullCourse() : false)
                .description(request.getDescription())
                .newPrice(request.getNewPrice())
                .oldPrice(request.getOldPrice())
@@ -142,8 +145,20 @@ public class CourseServiceImpl implements CourseService {
             course.setLinkDrive(request.getLinkDrive());
         }
 
+        if (request.getLinkDrive2() != null && !request.getLinkDrive2().isBlank()) {
+            course.setLinkDrive2(request.getLinkDrive2());
+        }
+
         if (request.getLinkTest() != null && !request.getLinkTest().isBlank()) {
             course.setLinkTest(request.getLinkTest());
+        }
+
+        if (request.getLinkTest2() != null && !request.getLinkTest2().isBlank()) {
+            course.setLinkTest2(request.getLinkTest2());
+        }
+
+        if (request.getIsFullCourse() != null) {
+            course.setIsFullCourse(request.getIsFullCourse());
         }
 
         if (request.getNewPrice() != null) {
@@ -340,6 +355,99 @@ public class CourseServiceImpl implements CourseService {
         str = str.replaceAll("^-+|-+$", "");
         
         return str;
+    }
+
+    @Override
+    public ApiResponse<CourseResponse> getFullCourse() {
+        Optional<Course> optionalFullCourse = courseRepository.findFirstByIsFullCourseTrueOrderByIdDesc();
+        if (optionalFullCourse.isEmpty()) {
+            optionalFullCourse = courseRepository.findCourseBySlug("full-course");
+        }
+        
+        Course fullCourse;
+        if (optionalFullCourse.isPresent()) {
+            fullCourse = optionalFullCourse.get();
+        } else {
+            fullCourse = Course.builder()
+                .name("Trọn Bộ Full Tất Cả Khóa Học Drive MH")
+                .description("<p>Gói Full Tất Cả Khóa Học tại KhoahocdriveMH - Sở hữu trọn đời kho tài liệu & video bài giảng chất lượng cao, cập nhật mới liên tục 24/7 trên Google Drive.</p>")
+                .oldPrice(new java.math.BigDecimal("100000000"))
+                .newPrice(new java.math.BigDecimal("599000"))
+                .avatar("/bn.png")
+                .linkDrive("https://drive.google.com/drive/folders/1RJ5xX2am3KivbbzzmEZ6Y3lkSB4CfFpN?usp=drive_link")
+                .linkDrive2("https://drive.google.com/drive/folders/1RJ5xX2am3KivbbzzmEZ6Y3lkSB4CfFpN?usp=drive_link")
+                .linkTest("https://drive.google.com/drive/folders/1RJ5xX2am3KivbbzzmEZ6Y3lkSB4CfFpN?usp=drive_link")
+                .linkTest2("https://drive.google.com/drive/folders/1RJ5xX2am3KivbbzzmEZ6Y3lkSB4CfFpN?usp=drive_link")
+                .slug("full-course")
+                .isFullCourse(true)
+                .build();
+            fullCourse = courseRepository.save(fullCourse);
+        }
+        
+        CourseResponse response = courseMapper.toResponse(fullCourse);
+        return ApiResponse.<CourseResponse>builder()
+                .message("Get Full Course successfully")
+                .data(response)
+                .build();
+    }
+
+    @Override
+    public ApiResponse<CourseResponse> updateFullCourse(MultipartFile file, CourseRequest request) throws Exception {
+        Optional<Course> optionalFullCourse = courseRepository.findFirstByIsFullCourseTrueOrderByIdDesc();
+        if (optionalFullCourse.isEmpty()) {
+            optionalFullCourse = courseRepository.findCourseBySlug("full-course");
+        }
+
+        Course fullCourse;
+        if (optionalFullCourse.isPresent()) {
+            fullCourse = optionalFullCourse.get();
+        } else {
+            fullCourse = new Course();
+            fullCourse.setSlug("full-course");
+            fullCourse.setIsFullCourse(true);
+            fullCourse.setAvatar("/bn.png");
+        }
+
+        if (file != null && !file.isEmpty()) {
+            String fileUrl = cloudinaryService.uploadImage(file);
+            fullCourse.setAvatar(fileUrl);
+        }
+
+        if (request.getName() != null && !request.getName().isBlank()) {
+            fullCourse.setName(request.getName());
+        }
+        if (request.getDescription() != null && !request.getDescription().isBlank()) {
+            fullCourse.setDescription(request.getDescription());
+        }
+        if (request.getOldPrice() != null) {
+            fullCourse.setOldPrice(request.getOldPrice());
+        }
+        if (request.getNewPrice() != null) {
+            fullCourse.setNewPrice(request.getNewPrice());
+        }
+        if (request.getLinkDrive() != null) {
+            fullCourse.setLinkDrive(request.getLinkDrive());
+        }
+        if (request.getLinkDrive2() != null) {
+            fullCourse.setLinkDrive2(request.getLinkDrive2());
+        }
+        if (request.getLinkTest() != null) {
+            fullCourse.setLinkTest(request.getLinkTest());
+        }
+        if (request.getLinkTest2() != null) {
+            fullCourse.setLinkTest2(request.getLinkTest2());
+        }
+        if (request.getIsFullCourse() != null) {
+            fullCourse.setIsFullCourse(request.getIsFullCourse());
+        } else {
+            fullCourse.setIsFullCourse(true);
+        }
+
+        fullCourse = courseRepository.save(fullCourse);
+        return ApiResponse.<CourseResponse>builder()
+                .message("Update Full Course successfully")
+                .data(courseMapper.toResponse(fullCourse))
+                .build();
     }
 
 }

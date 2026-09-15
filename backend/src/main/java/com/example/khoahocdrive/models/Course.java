@@ -43,12 +43,20 @@ public class Course extends AbstractEntity{
     private String avatar;
 
     @Column(name = "link_drive")
-    @NotNull
     private String linkDrive;
 
+    @Column(name = "link_drive_2")
+    private String linkDrive2;
+
     @Column(name = "link_test")
-    @NotNull
     private String linkTest;
+
+    @Column(name = "link_test_2")
+    private String linkTest2;
+
+    @Column(name = "is_full_course")
+    @Builder.Default
+    private Boolean isFullCourse = false;
 
     @ManyToOne
     @JoinColumn(name = "author_id")

@@ -19,4 +19,6 @@ public interface CourseService {
     ApiResponse<List<CourseResponse>> getMyCourse(Long userId);
     ApiResponse<CourseResponse> findCourseBySlug(String slug);
     ApiResponse<String> syncSlugs();
+    ApiResponse<CourseResponse> getFullCourse();
+    ApiResponse<CourseResponse> updateFullCourse(MultipartFile file, CourseRequest request) throws Exception;
 }

@@ -517,3 +517,18 @@
     color: #333;
   }
 }
+
+.nav-link-full-course {
+  background: linear-gradient(135deg, #ef4444 0%, #ec4899 100%) !important;
+  color: #ffffff !important;
+  font-weight: 800 !important;
+  padding: 6px 14px !important;
+  border-radius: 20px !important;
+  box-shadow: 0 4px 12px rgba(236, 72, 153, 0.35) !important;
+  transition: all 0.25s ease !important;
+}
+
+.nav-link-full-course:hover {
+  transform: translateY(-2px) scale(1.04) !important;
+  box-shadow: 0 6px 18px rgba(236, 72, 153, 0.5) !important;
+}

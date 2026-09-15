@@ -368,22 +368,24 @@ public class CourseServiceImpl implements CourseService {
     }
 
     private FullCourseConfig getOrCreateConfig() {
-        return fullCourseConfigRepository.findById(1L).orElseGet(() -> {
-            FullCourseConfig config = FullCourseConfig.builder()
-                .id(1L)
-                .name("Trọn Bộ Full Tất Cả Khóa Học Drive MH")
-                .description("<h3>🎉 Bạn sẽ có gì trong gói Full Khóa Học?</h3>\n<ul>\n  <li><strong>1000+ Khóa học chọn lọc:</strong> Đầy đủ các lĩnh vực Lập trình, Ngoại ngữ, Thiết kế đồ họa, Marketing, Kinh doanh online...</li>\n  <li><strong>Hệ thống 2 Link Google Drive:</strong> Link chính và Link dự phòng đồng bộ tốc độ cao.</li>\n  <li><strong>Cập nhật miễn phí:</strong> Khóa học mới được upload và làm mới liên tục mỗi ngày.</li>\n  <li><strong>Xem online & Tải về offline:</strong> Thoải mái xem trực tuyến hoặc tải trọn bộ về máy cá nhân lưu trữ.</li>\n</ul>")
-                .oldPrice(new java.math.BigDecimal("100000000"))
-                .newPrice(new java.math.BigDecimal("599000"))
-                .avatar("/bn.png")
-                .linkDrive("https://drive.google.com/drive/folders/1RJ5xX2am3KivbbzzmEZ6Y3lkSB4CfFpN?usp=drive_link")
-                .linkDrive2("https://drive.google.com/drive/folders/1RJ5xX2am3KivbbzzmEZ6Y3lkSB4CfFpN?usp=drive_link")
-                .linkTest("https://drive.google.com/drive/folders/1RJ5xX2am3KivbbzzmEZ6Y3lkSB4CfFpN?usp=drive_link")
-                .linkTest2("https://drive.google.com/drive/folders/1RJ5xX2am3KivbbzzmEZ6Y3lkSB4CfFpN?usp=drive_link")
-                .isFullCourse(true)
-                .build();
-            return fullCourseConfigRepository.save(config);
-        });
+        List<FullCourseConfig> configs = fullCourseConfigRepository.findAll();
+        if (!configs.isEmpty()) {
+            return configs.get(0);
+        }
+        FullCourseConfig config = FullCourseConfig.builder()
+            .id(1L)
+            .name("Trọn Bộ Full Tất Cả Khóa Học Drive MH")
+            .description("<h3>🎉 Bạn sẽ có gì trong gói Full Khóa Học?</h3>\n<ul>\n  <li><strong>1000+ Khóa học chọn lọc:</strong> Đầy đủ các lĩnh vực Lập trình, Ngoại ngữ, Thiết kế đồ họa, Marketing, Kinh doanh online...</li>\n  <li><strong>Hệ thống 2 Link Google Drive:</strong> Link chính và Link dự phòng đồng bộ tốc độ cao.</li>\n  <li><strong>Cập nhật miễn phí:</strong> Khóa học mới được upload và làm mới liên tục mỗi ngày.</li>\n  <li><strong>Xem online & Tải về offline:</strong> Thoải mái xem trực tuyến hoặc tải trọn bộ về máy cá nhân lưu trữ.</li>\n</ul>")
+            .oldPrice(new java.math.BigDecimal("100000000"))
+            .newPrice(new java.math.BigDecimal("599000"))
+            .avatar("/bn.png")
+            .linkDrive("https://drive.google.com/drive/folders/1RJ5xX2am3KivbbzzmEZ6Y3lkSB4CfFpN?usp=drive_link")
+            .linkDrive2("https://drive.google.com/drive/folders/1RJ5xX2am3KivbbzzmEZ6Y3lkSB4CfFpN?usp=drive_link")
+            .linkTest("https://drive.google.com/drive/folders/1RJ5xX2am3KivbbzzmEZ6Y3lkSB4CfFpN?usp=drive_link")
+            .linkTest2("https://drive.google.com/drive/folders/1RJ5xX2am3KivbbzzmEZ6Y3lkSB4CfFpN?usp=drive_link")
+            .isFullCourse(true)
+            .build();
+        return fullCourseConfigRepository.saveAndFlush(config);
     }
 
     private Course getOrCreateFullCourseEntity(FullCourseConfig config) {
@@ -496,7 +498,7 @@ public class CourseServiceImpl implements CourseService {
             }
         }
 
-        config = fullCourseConfigRepository.save(config);
+        config = fullCourseConfigRepository.saveAndFlush(config);
         Course courseEntity = getOrCreateFullCourseEntity(config);
 
         CourseResponse response = CourseResponse.builder()

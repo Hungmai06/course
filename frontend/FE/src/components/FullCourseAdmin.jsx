@@ -19,6 +19,13 @@ const FullCourseAdmin = () => {
   }, []);
 
   const defaultDriveLink = "https://drive.google.com/drive/folders/1RJ5xX2am3KivbbzzmEZ6Y3lkSB4CfFpN?usp=drive_link";
+  const defaultDescription = `<h3>🎉 Bạn sẽ có gì trong gói Full Khóa Học?</h3>
+<ul>
+  <li><strong>1000+ Khóa học chọn lọc:</strong> Đầy đủ các lĩnh vực Lập trình, Ngoại ngữ, Thiết kế đồ họa, Marketing, Kinh doanh online...</li>
+  <li><strong>Hệ thống 2 Link Google Drive:</strong> Link chính và Link dự phòng đồng bộ tốc độ cao.</li>
+  <li><strong>Cập nhật miễn phí:</strong> Khóa học mới được upload và làm mới liên tục mỗi ngày.</li>
+  <li><strong>Xem online & Tải về offline:</strong> Thoải mái xem trực tuyến hoặc tải trọn bộ về máy cá nhân lưu trữ.</li>
+</ul>`;
 
   const fetchFullCourse = async () => {
     setLoading(true);
@@ -28,7 +35,7 @@ const FullCourseAdmin = () => {
       if (data) {
         form.setFieldsValue({
           name: data.name || 'Trọn Bộ Full Tất Cả Khóa Học Drive MH',
-          description: data.description || '',
+          description: data.description || defaultDescription,
           oldPrice: data.oldPrice || 100000000,
           newPrice: data.newPrice || 599000,
           linkDrive: data.linkDrive || defaultDriveLink,

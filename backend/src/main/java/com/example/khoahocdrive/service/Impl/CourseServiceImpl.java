@@ -367,9 +367,32 @@ public class CourseServiceImpl implements CourseService {
         Course fullCourse;
         if (optionalFullCourse.isPresent()) {
             fullCourse = optionalFullCourse.get();
+            boolean needSave = false;
             if (fullCourse.getOldPrice() == null || fullCourse.getOldPrice().compareTo(new java.math.BigDecimal("10000000")) < 0) {
                 fullCourse.setOldPrice(new java.math.BigDecimal("100000000"));
+                needSave = true;
+            }
+            if (fullCourse.getNewPrice() == null || fullCourse.getNewPrice().compareTo(java.math.BigDecimal.ZERO) <= 0) {
                 fullCourse.setNewPrice(new java.math.BigDecimal("599000"));
+                needSave = true;
+            }
+            if (fullCourse.getLinkDrive() == null || fullCourse.getLinkDrive().trim().isEmpty()) {
+                fullCourse.setLinkDrive("https://drive.google.com/drive/folders/1RJ5xX2am3KivbbzzmEZ6Y3lkSB4CfFpN?usp=drive_link");
+                needSave = true;
+            }
+            if (fullCourse.getLinkDrive2() == null || fullCourse.getLinkDrive2().trim().isEmpty()) {
+                fullCourse.setLinkDrive2("https://drive.google.com/drive/folders/1RJ5xX2am3KivbbzzmEZ6Y3lkSB4CfFpN?usp=drive_link");
+                needSave = true;
+            }
+            if (fullCourse.getLinkTest() == null || fullCourse.getLinkTest().trim().isEmpty()) {
+                fullCourse.setLinkTest("https://drive.google.com/drive/folders/1RJ5xX2am3KivbbzzmEZ6Y3lkSB4CfFpN?usp=drive_link");
+                needSave = true;
+            }
+            if (fullCourse.getLinkTest2() == null || fullCourse.getLinkTest2().trim().isEmpty()) {
+                fullCourse.setLinkTest2("https://drive.google.com/drive/folders/1RJ5xX2am3KivbbzzmEZ6Y3lkSB4CfFpN?usp=drive_link");
+                needSave = true;
+            }
+            if (needSave) {
                 fullCourse = courseRepository.save(fullCourse);
             }
         } else {
@@ -424,22 +447,26 @@ public class CourseServiceImpl implements CourseService {
         if (request.getDescription() != null && !request.getDescription().isBlank()) {
             fullCourse.setDescription(request.getDescription());
         }
-        if (request.getOldPrice() != null) {
+        if (request.getOldPrice() != null && request.getOldPrice().compareTo(java.math.BigDecimal.ZERO) > 0) {
             fullCourse.setOldPrice(request.getOldPrice());
+        } else if (fullCourse.getOldPrice() == null) {
+            fullCourse.setOldPrice(new java.math.BigDecimal("100000000"));
         }
-        if (request.getNewPrice() != null) {
+        if (request.getNewPrice() != null && request.getNewPrice().compareTo(java.math.BigDecimal.ZERO) > 0) {
             fullCourse.setNewPrice(request.getNewPrice());
+        } else if (fullCourse.getNewPrice() == null) {
+            fullCourse.setNewPrice(new java.math.BigDecimal("599000"));
         }
-        if (request.getLinkDrive() != null) {
+        if (request.getLinkDrive() != null && !request.getLinkDrive().isBlank()) {
             fullCourse.setLinkDrive(request.getLinkDrive());
         }
-        if (request.getLinkDrive2() != null) {
+        if (request.getLinkDrive2() != null && !request.getLinkDrive2().isBlank()) {
             fullCourse.setLinkDrive2(request.getLinkDrive2());
         }
-        if (request.getLinkTest() != null) {
+        if (request.getLinkTest() != null && !request.getLinkTest().isBlank()) {
             fullCourse.setLinkTest(request.getLinkTest());
         }
-        if (request.getLinkTest2() != null) {
+        if (request.getLinkTest2() != null && !request.getLinkTest2().isBlank()) {
             fullCourse.setLinkTest2(request.getLinkTest2());
         }
         if (request.getIsFullCourse() != null) {

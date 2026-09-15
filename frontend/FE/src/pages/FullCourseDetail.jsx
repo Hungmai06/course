@@ -16,12 +16,22 @@ const FullCourseDetail = () => {
   const [activeTab, setActiveTab] = useState('content'); // 'content' or 'access'
   const [expandedFaq, setExpandedFaq] = useState(null);
 
+  const defaultDriveLink = 'https://drive.google.com/drive/folders/1RJ5xX2am3KivbbzzmEZ6Y3lkSB4CfFpN?usp=drive_link';
+
   useEffect(() => {
     courseService.getFullCourse()
       .then(res => {
         const data = res.data?.data || res.data;
         if (data) {
-          setCourse(data);
+          setCourse({
+            ...data,
+            oldPrice: data.oldPrice && data.oldPrice > 0 ? data.oldPrice : 100000000,
+            newPrice: data.newPrice && data.newPrice > 0 ? data.newPrice : 599000,
+            linkDrive: data.linkDrive || defaultDriveLink,
+            linkDrive2: data.linkDrive2 || defaultDriveLink,
+            linkTest: data.linkTest || defaultDriveLink,
+            linkTest2: data.linkTest2 || defaultDriveLink,
+          });
         }
       })
       .catch(err => {

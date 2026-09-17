@@ -133,15 +133,47 @@ public class OrderServiceImpl implements OrderService {
                         .build();
                 orderDetails.add(orderDetail);
             }
-        } else {
+        }
+        
+        // Nếu chọn Full Course hoặc danh sách courses rỗng, tự động gắn fcEntity vào orderDetails
+        boolean isFcRequested = request.getCourseIds().stream().anyMatch(id -> 
+            id != null && (id.equals(-1L) || id.equals(854L) || (fullCourseConfig != null && id.equals(fullCourseConfig.getId())))
+        );
+        if (isFcRequested || orderDetails.isEmpty()) {
             Course fcEntity = courseRepository.findCourseBySlug("full-course").orElse(null);
-            if (fcEntity != null) {
-                OrderDetail orderDetail = OrderDetail.builder()
-                        .order(order)
-                        .quantity(1)
-                        .course(fcEntity)
+            if (fcEntity == null && fullCourseConfig != null) {
+                fcEntity = Course.builder()
+                        .name(fullCourseConfig.getName())
+                        .slug("full-course")
+                        .description(fullCourseConfig.getDescription())
+                        .oldPrice(fullCourseConfig.getOldPrice())
+                        .newPrice(fullCourseConfig.getNewPrice())
+                        .avatar(fullCourseConfig.getAvatar())
+                        .linkDrive(fullCourseConfig.getLinkDrive())
+                        .linkDrive2(fullCourseConfig.getLinkDrive2())
+                        .linkTest(fullCourseConfig.getLinkTest())
+                        .linkTest2(fullCourseConfig.getLinkTest2())
+                        .isFullCourse(true)
                         .build();
-                orderDetails.add(orderDetail);
+                fcEntity = courseRepository.save(fcEntity);
+            } else if (fcEntity != null && fullCourseConfig != null) {
+                fcEntity.setLinkDrive(fullCourseConfig.getLinkDrive());
+                fcEntity.setLinkDrive2(fullCourseConfig.getLinkDrive2());
+                fcEntity.setName(fullCourseConfig.getName());
+                fcEntity.setNewPrice(fullCourseConfig.getNewPrice());
+                fcEntity = courseRepository.save(fcEntity);
+            }
+
+            if (fcEntity != null) {
+                boolean alreadyInDetails = orderDetails.stream().anyMatch(od -> od.getCourse() != null && od.getCourse().getId().equals(fcEntity.getId()));
+                if (!alreadyInDetails) {
+                    OrderDetail orderDetail = OrderDetail.builder()
+                            .order(order)
+                            .quantity(1)
+                            .course(fcEntity)
+                            .build();
+                    orderDetails.add(orderDetail);
+                }
             }
         }
 

@@ -35,6 +35,10 @@ import java.util.List;
 import java.util.Map;
 import java.util.Optional;
 
+import com.example.khoahocdrive.models.FullCourseConfig;
+import com.example.khoahocdrive.repository.FullCourseConfigRepository;
+import com.example.khoahocdrive.models.Course;
+
 @Service
 @RequiredArgsConstructor
 @Slf4j
@@ -45,6 +49,7 @@ public class VietQrServiceImpl implements VietQrService {
     private final GoogleDriveService googleDriveService;
     private final CartService cartService;
     private final BillRepository billRepository;
+    private final FullCourseConfigRepository fullCourseConfigRepository;
 
     @Value("${vietqr.client-id}")
     private String clientId;
@@ -189,14 +194,54 @@ public class VietQrServiceImpl implements VietQrService {
             log.error("Lỗi gửi email xác nhận thanh toán: {}", e.getMessage(), e);
         }
 
-        // 6) Grant Drive
+        // 6) Grant Drive - cấp quyền cả linkDrive (Link 1) VÀ linkDrive2 (Link 2)
         String email = order.getEmail();
-        for (OrderDetail detail : order.getOrderDetails()) {
-            String driveLink = detail.getCourse().getLinkDrive();
-            try {
-                googleDriveService.grantPermissionViaHttp(driveLink, email);
-            } catch (Exception e) {
-                log.error("Không thể cấp quyền cho link: {}, lỗi: {}", driveLink, e.getMessage(), e);
+        if (email != null && !email.isBlank()) {
+            if (order.getOrderDetails() != null) {
+                for (OrderDetail detail : order.getOrderDetails()) {
+                    Course course = detail.getCourse();
+                    if (course != null) {
+                        // Grant Link 1
+                        if (course.getLinkDrive() != null && !course.getLinkDrive().isBlank()) {
+                            try {
+                                googleDriveService.grantPermissionViaHttp(course.getLinkDrive().trim(), email);
+                            } catch (Exception e) {
+                                log.error("Không thể cấp quyền linkDrive: {}, lỗi: {}", course.getLinkDrive(), e.getMessage());
+                            }
+                        }
+                        // Grant Link 2
+                        if (course.getLinkDrive2() != null && !course.getLinkDrive2().isBlank()) {
+                            try {
+                                googleDriveService.grantPermissionViaHttp(course.getLinkDrive2().trim(), email);
+                            } catch (Exception e) {
+                                log.error("Không thể cấp quyền linkDrive2: {}, lỗi: {}", course.getLinkDrive2(), e.getMessage());
+                            }
+                        }
+                    }
+                }
+            }
+
+            // Fallback: Nếu đơn hàng là Full Course hoặc orderDetails rỗng, cũng tự động cấp quyền 2 link từ FullCourseConfig
+            FullCourseConfig config = fullCourseConfigRepository.findById(1L).orElse(null);
+            if (config != null) {
+                boolean isFcOrder = (order.getOrderDetails() == null || order.getOrderDetails().isEmpty())
+                        || order.getOrderDetails().stream().anyMatch(od -> od.getCourse() != null && (Boolean.TRUE.equals(od.getCourse().getIsFullCourse()) || "full-course".equalsIgnoreCase(od.getCourse().getSlug())));
+                if (isFcOrder) {
+                    if (config.getLinkDrive() != null && !config.getLinkDrive().isBlank()) {
+                        try {
+                            googleDriveService.grantPermissionViaHttp(config.getLinkDrive().trim(), email);
+                        } catch (Exception e) {
+                            log.error("Không thể cấp quyền config linkDrive: {}, lỗi: {}", config.getLinkDrive(), e.getMessage());
+                        }
+                    }
+                    if (config.getLinkDrive2() != null && !config.getLinkDrive2().isBlank()) {
+                        try {
+                            googleDriveService.grantPermissionViaHttp(config.getLinkDrive2().trim(), email);
+                        } catch (Exception e) {
+                            log.error("Không thể cấp quyền config linkDrive2: {}, lỗi: {}", config.getLinkDrive2(), e.getMessage());
+                        }
+                    }
+                }
             }
         }
 

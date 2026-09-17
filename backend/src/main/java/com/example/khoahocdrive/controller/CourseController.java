@@ -58,8 +58,12 @@ public class CourseController {
     @DeleteMapping("/{id}")
     @PreAuthorize("hasAnyRole('ADMIN')")
     @Operation(summary = "Delete Course")
-    public void delete(@PathVariable Long id){
+    public ApiResponse<String> delete(@PathVariable Long id){
         courseService.delete(id);
+        return ApiResponse.<String>builder()
+                .message("Xóa khóa học thành công")
+                .data("Deleted course with ID: " + id)
+                .build();
     }
 
     @GetMapping("/{userId}")

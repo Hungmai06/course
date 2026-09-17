@@ -300,9 +300,12 @@ export default function Course() {
     try {
       await courseService.remove(id);
       courseService.clearCache();
+      showToast('🎉 Xóa khóa học thành công!', 'success');
       await refreshCourseList();
     } catch (err) {
-      showToast('Lỗi khi xóa khóa học', 'error');
+      console.error('Lỗi khi xóa khóa học:', err);
+      const serverMsg = err.response?.data?.message || err.message || 'Lỗi khi xóa khóa học';
+      showToast(`Xóa thất bại: ${serverMsg}`, 'error');
     } finally {
       setLoadingCourse(false);
     }

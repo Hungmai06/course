@@ -261,33 +261,41 @@ public class CourseServiceImpl implements CourseService {
     }
 
     @Override
+    @Transactional
     public void delete(Long id) {
         Course course = courseRepository.findById(id)
-                .orElseThrow(() -> new ResourceNotFoundException("Course not found"));
+                .orElseThrow(() -> new ResourceNotFoundException("Course not found with id: " + id));
 
-        // Xóa OrderDetail liên quan trước để tránh foreign key constraint
+        if (Boolean.TRUE.equals(course.getIsFullCourse()) || "full-course".equalsIgnoreCase(course.getSlug())) {
+            throw new InvalidDataException("Không thể xóa Gói Full Khóa Học mặc định của hệ thống!");
+        }
+
+        // 1. Xóa OrderDetail liên quan trước để tránh lỗi Foreign Key Constraint
         List<OrderDetail> relatedDetails = orderDetailRepository.findByCourseId(id);
-        if (!relatedDetails.isEmpty()) {
+        if (relatedDetails != null && !relatedDetails.isEmpty()) {
             orderDetailRepository.deleteAll(relatedDetails);
         }
 
-        // Xóa CartItem liên quan trước để tránh foreign key constraint
+        // 2. Xóa CartItem liên quan trước để tránh lỗi Foreign Key Constraint
         List<CartItem> relatedCartItems = cartItemRepository.findByCourseId(id);
-        if (!relatedCartItems.isEmpty()) {
+        if (relatedCartItems != null && !relatedCartItems.isEmpty()) {
             cartItemRepository.deleteAll(relatedCartItems);
         }
 
-        // Xóa ảnh trên Cloudinary nếu có
-        if (course.getAvatar() != null && !course.getAvatar().isEmpty()) {
+        // 3. Xóa ảnh trên Cloudinary nếu có (an toàn chuỗi)
+        if (course.getAvatar() != null && course.getAvatar().contains("cloudinary.com")) {
             try {
-                // Extract public_id từ URL Cloudinary (optional, skip nếu lỗi)
                 String avatar = course.getAvatar();
-                String publicId = avatar.substring(avatar.lastIndexOf("/") + 1, avatar.lastIndexOf("."));
-                cloudinaryService.deleteImage(publicId);
+                int lastSlash = avatar.lastIndexOf("/");
+                int lastDot = avatar.lastIndexOf(".");
+                if (lastSlash != -1 && lastDot > lastSlash) {
+                    String publicId = avatar.substring(lastSlash + 1, lastDot);
+                    cloudinaryService.deleteImage(publicId);
+                }
             } catch (Exception ignored) {}
         }
 
-        courseRepository.deleteById(id);
+        courseRepository.delete(course);
     }
 
     @Override

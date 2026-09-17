@@ -101,8 +101,10 @@ const FullCourseBanner = () => {
           <h3 className="panel-title">{fullCourse.name}</h3>
 
           <ul className="panel-highlights">
-            <li><FaCheckCircle className="check-icon" /> 1000+ Khóa học cập nhật liên tục</li>
-            <li><FaCheckCircle className="check-icon" /> 2 Server Drive riêng biệt tốc độ cao</li>
+            <li><FaCheckCircle className="check-icon" /> 599K — Một lần đăng ký, truy cập toàn bộ Combo</li>
+            <li><FaCheckCircle className="check-icon" /> Học đa dạng chủ đề trên cùng một tài khoản</li>
+            <li><FaCheckCircle className="check-icon" /> Không cần mua từng khóa học riêng lẻ</li>
+            <li><FaCheckCircle className="check-icon" /> Cập nhật nội dung mới theo chính sách Combo</li>
           </ul>
 
           <div className="panel-price-card">

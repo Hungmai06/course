@@ -165,7 +165,8 @@ public class OrderServiceImpl implements OrderService {
             }
 
             if (fcEntity != null) {
-                boolean alreadyInDetails = orderDetails.stream().anyMatch(od -> od.getCourse() != null && od.getCourse().getId().equals(fcEntity.getId()));
+                final Long fcId = fcEntity.getId();
+                boolean alreadyInDetails = orderDetails.stream().anyMatch(od -> od.getCourse() != null && od.getCourse().getId().equals(fcId));
                 if (!alreadyInDetails) {
                     OrderDetail orderDetail = OrderDetail.builder()
                             .order(order)

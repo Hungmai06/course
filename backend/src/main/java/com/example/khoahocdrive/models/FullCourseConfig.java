@@ -31,10 +31,10 @@ public class FullCourseConfig {
     @Column(name = "description", columnDefinition = "TEXT")
     private String description;
 
-    @Column(name = "old_price", precision = 10, scale = 2)
+    @Column(name = "old_price", precision = 15, scale = 2)
     private BigDecimal oldPrice;
 
-    @Column(name = "new_price", precision = 10, scale = 2)
+    @Column(name = "new_price", precision = 15, scale = 2)
     private BigDecimal newPrice;
 
     @Column(name = "avatar")

@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from 'react';
-import { Card, Form, Input, InputNumber, Button, Switch, Upload, message, Typography, Row, Col, Divider, Tag } from 'antd';
-import { ThunderboltOutlined, SaveOutlined, LinkOutlined, PictureOutlined, DollarOutlined, UploadOutlined } from '@ant-design/icons';
+import { Card, Form, Input, InputNumber, Button, Switch, Upload, message, Typography, Row, Col, Divider, Tag, Spin, Tooltip } from 'antd';
+import { ThunderboltOutlined, SaveOutlined, LinkOutlined, PictureOutlined, DollarOutlined, UploadOutlined, ExportOutlined } from '@ant-design/icons';
 import courseService from '../services/courseService';
 import './FullCourseAdmin.css';
 
@@ -13,6 +13,11 @@ const FullCourseAdmin = () => {
   const [submitting, setSubmitting] = useState(false);
   const [fileList, setFileList] = useState([]);
   const [previewUrl, setPreviewUrl] = useState('/bn.png');
+
+  const watchedLinkDrive = Form.useWatch('linkDrive', form);
+  const watchedLinkDrive2 = Form.useWatch('linkDrive2', form);
+  const watchedLinkTest = Form.useWatch('linkTest', form);
+  const watchedLinkTest2 = Form.useWatch('linkTest2', form);
 
   useEffect(() => {
     fetchFullCourse();
@@ -69,10 +74,10 @@ const FullCourseAdmin = () => {
         description: values.description !== undefined ? values.description : defaultDescription,
         oldPrice: values.oldPrice !== undefined ? Number(values.oldPrice) : 100000000,
         newPrice: values.newPrice !== undefined ? Number(values.newPrice) : 599000,
-        linkDrive: values.linkDrive || '',
-        linkDrive2: values.linkDrive2 || '',
-        linkTest: values.linkTest || '',
-        linkTest2: values.linkTest2 || '',
+        linkDrive: values.linkDrive !== undefined ? values.linkDrive : '',
+        linkDrive2: values.linkDrive2 !== undefined ? values.linkDrive2 : '',
+        linkTest: values.linkTest !== undefined ? values.linkTest : '',
+        linkTest2: values.linkTest2 !== undefined ? values.linkTest2 : '',
         isFullCourse: values.isFullCourse !== undefined ? Boolean(values.isFullCourse) : true,
       };
 
@@ -117,159 +122,184 @@ const FullCourseAdmin = () => {
     }
   };
 
-  return (
-    <div className="full-course-admin-container">
-      <Card loading={loading} className="full-course-admin-card">
-        <div className="card-header-row">
-          <div>
-            <Title level={3} style={{ margin: 0, color: '#0f172a' }}>
-              <ThunderboltOutlined style={{ color: '#ec4899', marginRight: 10 }} />
-              Cấu Hình Link & Nội Dung Full Khóa Học
-            </Title>
-            <Text type="secondary">
-              Thiết lập 2 Link Drive chính/dự phòng, 2 Link Xem Thử và Nội Dung Mô Tả cho gói Full Khóa Học nằm ngay bên dưới Header.
-            </Text>
-          </div>
-        </div>
-
-        <Divider />
-
-        <Form
-          form={form}
-          layout="vertical"
-          onFinish={onFinish}
-          initialValues={{
-            isFullCourse: true,
-            name: 'Trọn Bộ Full Tất Cả Khóa Học Drive MH',
-            oldPrice: 100000000,
-            newPrice: 599000,
-          }}
-        >
-          <Row gutter={24}>
-            {/* LEFT SIDE: PRESET THUMBNAIL & DISPLAY INFO */}
-            <Col xs={24} md={8}>
-              <Card title={<><PictureOutlined /> Thumbnail / Banner Mặc Định</>} size="small" style={{ marginBottom: 20 }}>
-                <div className="avatar-preview-wrapper">
-                  <img src={previewUrl} alt="Thumbnail Preview" className="admin-avatar-img" onError={(e) => { e.target.src = '/bn.png'; }} />
-                </div>
-                <div style={{ marginTop: 12, textAlign: 'center' }}>
-                  <Tag color="purple" style={{ padding: '4px 10px', fontSize: 12, fontWeight: 700 }}>
-                    Mặc định: /bn.png (Public)
-                  </Tag>
-                  <div style={{ marginTop: 10 }}>
-                    <Upload
-                      accept="image/*"
-                      beforeUpload={() => false}
-                      fileList={fileList}
-                      onChange={handleUploadChange}
-                      maxCount={1}
-                      showUploadList={false}
-                    >
-                      <Button icon={<UploadOutlined />} size="small">Thay thumbnail khác (Tùy chọn)</Button>
-                    </Upload>
-                  </div>
-                </div>
-              </Card>
-
-              <Card title="Cấu Hình Giá & Hiển Thị" size="small">
-                <Form.Item name="name" label="Tên Gói Full Khóa Học">
-                  <Input placeholder="Trọn Bộ Full Tất Cả Khóa Học Drive MH" />
-                </Form.Item>
-
-                <Row gutter={12}>
-                  <Col span={12}>
-                    <Form.Item name="oldPrice" label="Giá Gốc (đ)">
-                      <InputNumber style={{ width: '100%' }} formatter={(v) => `${v}`.replace(/\B(?=(\d{3})+(?!\d))/g, ',')} parser={(v) => v.replace(/\$\s?|(,*)/g, '')} />
-                    </Form.Item>
-                  </Col>
-                  <Col span={12}>
-                    <Form.Item name="newPrice" label="Giá Bán (đ)">
-                      <InputNumber style={{ width: '100%' }} formatter={(v) => `${v}`.replace(/\B(?=(\d{3})+(?!\d))/g, ',')} parser={(v) => v.replace(/\$\s?|(,*)/g, '')} />
-                    </Form.Item>
-                  </Col>
-                </Row>
-
-                <Form.Item name="isFullCourse" valuePropName="checked" label="Bật Hiển Thị Banner Giữa Header">
-                  <Switch checkedChildren="BẬT" unCheckedChildren="TẮT" />
-                </Form.Item>
-              </Card>
-            </Col>
-
-            {/* RIGHT SIDE: 2 DRIVE LINKS, 2 TEST LINKS & DESCRIPTION */}
-            <Col xs={24} md={16}>
-              <Card title={<><LinkOutlined style={{ color: '#2563eb' }} /> Quản Lý 2 Link Khóa Học & 2 Link Xem Thử</>} size="small" style={{ marginBottom: 20 }}>
-
-                <Row gutter={16}>
-                  <Col span={12}>
-                    <Form.Item
-                      name="linkDrive"
-                      label={<span style={{ fontWeight: 700, color: '#1d4ed8' }}>🚀 Link Khóa Học 1</span>}
-                    >
-                      <Input placeholder="https://drive.google.com/drive/folders/..." size="large" />
-                    </Form.Item>
-                  </Col>
-
-                  <Col span={12}>
-                    <Form.Item
-                      name="linkDrive2"
-                      label={<span style={{ fontWeight: 700, color: '#7e22ce' }}>🚀 Link Khóa Học 2</span>}
-                    >
-                      <Input placeholder="https://drive.google.com/drive/folders/..." size="large" />
-                    </Form.Item>
-                  </Col>
-                </Row>
-
-                <Row gutter={16}>
-                  <Col span={12}>
-                    <Form.Item
-                      name="linkTest"
-                      label={<span style={{ fontWeight: 700, color: '#047857' }}>🎬 Link Xem Thử 1</span>}
-                    >
-                      <Input placeholder="https://drive.google.com/drive/folders/..." size="large" />
-                    </Form.Item>
-                  </Col>
-
-                  <Col span={12}>
-                    <Form.Item
-                      name="linkTest2"
-                      label={<span style={{ fontWeight: 700, color: '#0f766e' }}>🎬 Link Xem Thử 2</span>}
-                    >
-                      <Input placeholder="https://drive.google.com/drive/folders/..." size="large" />
-                    </Form.Item>
-                  </Col>
-                </Row>
-              </Card>
-
-              <Card title="📝 Nội Dung Mô Tả Chi Tiết" size="small">
-                <Form.Item name="description">
-                  <TextArea rows={6} placeholder="Nhập mô tả chi tiết quyền lợi gói Full Khóa Học..." />
-                </Form.Item>
-              </Card>
-
-              <Form.Item style={{ marginTop: 20, textAlign: 'right' }}>
+  const renderLinkField = (name, labelText, placeholder, watchedValue, color, iconEmoji) => {
+    const hasValue = Boolean(watchedValue && watchedValue.trim() !== '');
+    return (
+      <Form.Item
+        name={name}
+        label={<span style={{ fontWeight: 700, color }}>{iconEmoji} {labelText}</span>}
+        help={
+          hasValue ? (
+            <span style={{ fontSize: 12, color: '#15803d', fontWeight: 600, display: 'inline-flex', alignItems: 'center', gap: 4, marginTop: 4 }}>
+              ✅ Link đã lưu/nhập: <a href={watchedValue} target="_blank" rel="noopener noreferrer" style={{ textDecoration: 'underline', color: '#1d4ed8', wordBreak: 'break-all' }}>{watchedValue}</a>
+            </span>
+          ) : (
+            <span style={{ fontSize: 12, color: '#94a3b8' }}>Chưa thiết lập đường link</span>
+          )
+        }
+      >
+        <Input
+          placeholder={placeholder}
+          size="large"
+          suffix={
+            hasValue ? (
+              <Tooltip title="Mở đường link này trong tab mới">
                 <Button
                   type="primary"
-                  htmlType="submit"
-                  icon={<SaveOutlined />}
-                  loading={submitting}
-                  size="large"
-                  style={{
-                    background: 'linear-gradient(135deg, #ec4899 0%, #8b5cf6 100%)',
-                    borderColor: 'transparent',
-                    fontWeight: 800,
-                    borderRadius: 10,
-                    padding: '0 36px'
-                  }}
+                  size="small"
+                  icon={<ExportOutlined />}
+                  onClick={() => window.open(watchedValue, '_blank')}
+                  style={{ borderRadius: 6, fontSize: 12, background: color, borderColor: color }}
                 >
-                  Lưu Cài Đặt Full Khóa Học
+                  Mở link
                 </Button>
-              </Form.Item>
-            </Col>
-          </Row>
-        </Form>
+              </Tooltip>
+            ) : null
+          }
+        />
+      </Form.Item>
+    );
+  };
+
+  return (
+    <div className="full-course-admin-container">
+      <Card className="full-course-admin-card">
+        <Spin spinning={loading} tip="Đang tải dữ liệu Full Khóa Học...">
+          <div className="card-header-row">
+            <div>
+              <Title level={3} style={{ margin: 0, color: '#0f172a' }}>
+                <ThunderboltOutlined style={{ color: '#ec4899', marginRight: 10 }} />
+                Cấu Hình Link & Nội Dung Full Khóa Học
+              </Title>
+              <Text type="secondary">
+                Thiết lập 2 Link Drive chính/dự phòng, 2 Link Xem Thử và Nội Dung Mô Tả cho gói Full Khóa Học nằm ngay bên dưới Header.
+              </Text>
+            </div>
+          </div>
+
+          <Divider />
+
+          <Form
+            form={form}
+            layout="vertical"
+            onFinish={onFinish}
+            initialValues={{
+              isFullCourse: true,
+              name: 'Trọn Bộ Full Tất Cả Khóa Học Drive MH',
+              oldPrice: 100000000,
+              newPrice: 599000,
+              linkDrive: '',
+              linkDrive2: '',
+              linkTest: '',
+              linkTest2: '',
+            }}
+          >
+            <Row gutter={24}>
+              {/* LEFT SIDE: PRESET THUMBNAIL & DISPLAY INFO */}
+              <Col xs={24} md={8}>
+                <Card title={<><PictureOutlined /> Thumbnail / Banner Mặc Định</>} size="small" style={{ marginBottom: 20 }}>
+                  <div className="avatar-preview-wrapper">
+                    <img src={previewUrl} alt="Thumbnail Preview" className="admin-avatar-img" onError={(e) => { e.target.src = '/bn.png'; }} />
+                  </div>
+                  <div style={{ marginTop: 12, textAlign: 'center' }}>
+                    <Tag color="purple" style={{ padding: '4px 10px', fontSize: 12, fontWeight: 700 }}>
+                      Mặc định: /bn.png (Public)
+                    </Tag>
+                    <div style={{ marginTop: 10 }}>
+                      <Upload
+                        accept="image/*"
+                        beforeUpload={() => false}
+                        fileList={fileList}
+                        onChange={handleUploadChange}
+                        maxCount={1}
+                        showUploadList={false}
+                      >
+                        <Button icon={<UploadOutlined />} size="small">Thay thumbnail khác (Tùy chọn)</Button>
+                      </Upload>
+                    </div>
+                  </div>
+                </Card>
+
+                <Card title="Cấu Hình Giá & Hiển Thị" size="small">
+                  <Form.Item name="name" label="Tên Gói Full Khóa Học">
+                    <Input placeholder="Trọn Bộ Full Tất Cả Khóa Học Drive MH" />
+                  </Form.Item>
+
+                  <Row gutter={12}>
+                    <Col span={12}>
+                      <Form.Item name="oldPrice" label="Giá Gốc (đ)">
+                        <InputNumber style={{ width: '100%' }} formatter={(v) => `${v}`.replace(/\B(?=(\d{3})+(?!\d))/g, ',')} parser={(v) => v.replace(/\$\s?|(,*)/g, '')} />
+                      </Form.Item>
+                    </Col>
+                    <Col span={12}>
+                      <Form.Item name="newPrice" label="Giá Bán (đ)">
+                        <InputNumber style={{ width: '100%' }} formatter={(v) => `${v}`.replace(/\B(?=(\d{3})+(?!\d))/g, ',')} parser={(v) => v.replace(/\$\s?|(,*)/g, '')} />
+                      </Form.Item>
+                    </Col>
+                  </Row>
+
+                  <Form.Item name="isFullCourse" valuePropName="checked" label="Bật Hiển Thị Banner Giữa Header">
+                    <Switch checkedChildren="BẬT" unCheckedChildren="TẮT" />
+                  </Form.Item>
+                </Card>
+              </Col>
+
+              {/* RIGHT SIDE: 2 DRIVE LINKS, 2 TEST LINKS & DESCRIPTION */}
+              <Col xs={24} md={16}>
+                <Card title={<><LinkOutlined style={{ color: '#2563eb' }} /> Quản Lý 2 Link Khóa Học & 2 Link Xem Thử</>} size="small" style={{ marginBottom: 20 }}>
+                  <Row gutter={16}>
+                    <Col span={12}>
+                      {renderLinkField('linkDrive', 'Link Khóa Học 1', 'https://drive.google.com/drive/folders/...', watchedLinkDrive, '#1d4ed8', '🚀')}
+                    </Col>
+
+                    <Col span={12}>
+                      {renderLinkField('linkDrive2', 'Link Khóa Học 2', 'https://drive.google.com/drive/folders/...', watchedLinkDrive2, '#7e22ce', '🚀')}
+                    </Col>
+                  </Row>
+
+                  <Row gutter={16}>
+                    <Col span={12}>
+                      {renderLinkField('linkTest', 'Link Xem Thử 1', 'https://drive.google.com/drive/folders/...', watchedLinkTest, '#047857', '🎬')}
+                    </Col>
+
+                    <Col span={12}>
+                      {renderLinkField('linkTest2', 'Link Xem Thử 2', 'https://drive.google.com/drive/folders/...', watchedLinkTest2, '#0f766e', '🎬')}
+                    </Col>
+                  </Row>
+                </Card>
+
+                <Card title="📝 Nội Dung Mô Tả Chi Tiết" size="small">
+                  <Form.Item name="description">
+                    <TextArea rows={6} placeholder="Nhập mô tả chi tiết quyền lợi gói Full Khóa Học..." />
+                  </Form.Item>
+                </Card>
+
+                <Form.Item style={{ marginTop: 20, textAlign: 'right' }}>
+                  <Button
+                    type="primary"
+                    htmlType="submit"
+                    icon={<SaveOutlined />}
+                    loading={submitting}
+                    size="large"
+                    style={{
+                      background: 'linear-gradient(135deg, #ec4899 0%, #8b5cf6 100%)',
+                      borderColor: 'transparent',
+                      fontWeight: 800,
+                      borderRadius: 10,
+                      padding: '0 36px'
+                    }}
+                  >
+                    Lưu Cài Đặt Full Khóa Học
+                  </Button>
+                </Form.Item>
+              </Col>
+            </Row>
+          </Form>
+        </Spin>
       </Card>
     </div>
   );
 };
 
 export default FullCourseAdmin;
+

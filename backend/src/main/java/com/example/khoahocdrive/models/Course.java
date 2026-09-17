@@ -31,11 +31,11 @@ public class Course extends AbstractEntity{
     @Column(name = "description",columnDefinition = "TEXT")
     private String description;
 
-    @Column(name = "old_price",nullable = false,precision = 10, scale = 2)
+    @Column(name = "old_price", nullable = false, precision = 15, scale = 2)
     @NotNull
     private BigDecimal oldPrice;
 
-    @Column(name = "new_price",nullable = false, precision = 10,scale = 2)
+    @Column(name = "new_price", nullable = false, precision = 15, scale = 2)
     @NotNull
     private BigDecimal newPrice;
 

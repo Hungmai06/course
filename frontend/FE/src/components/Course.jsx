@@ -315,6 +315,9 @@ export default function Course() {
 
     const res = await courseService.getAll(0, 1000);
     let allData = normalizeList(res);
+
+    // Loại bỏ gói Full Khóa Học hệ thống ra khỏi danh sách khóa học thường (do đã có màn hình quản lý Full Khóa Học riêng)
+    allData = allData.filter(course => !course.isFullCourse && course.slug !== 'full-course');
    
     if (courseSearch) {
       allData = allData.filter(course => 

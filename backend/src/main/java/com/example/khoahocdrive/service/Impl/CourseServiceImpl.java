@@ -221,9 +221,9 @@ public class CourseServiceImpl implements CourseService {
 
     @Override
     public ApiResponse<PagedResponse<CourseResponse>> getAll(int page, int size) {
-        Pageable pageable = PageRequest.of(page,size,Sort.by(Sort.Direction.DESC, "id"));
-        Page<Course> courses = courseRepository.findAll(pageable);
-        List<CourseResponse> courseResponses= courses.stream().map(courseMapper::toResponse).toList();
+        Pageable pageable = PageRequest.of(page, size, Sort.by(Sort.Direction.DESC, "id"));
+        Page<Course> courses = courseRepository.findByIsFullCourseFalseOrIsFullCourseIsNull(pageable);
+        List<CourseResponse> courseResponses = courses.stream().map(courseMapper::toResponse).toList();
         PagedResponse<CourseResponse> courseResponsePagedResponse = PagedResponse.<CourseResponse>builder()
                 .content(courseResponses)
                 .pageNumber(courses.getNumber())

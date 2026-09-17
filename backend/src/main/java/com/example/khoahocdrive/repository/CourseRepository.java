@@ -17,7 +17,10 @@ public interface CourseRepository extends JpaRepository<Course,Long>, JpaSpecifi
     Optional<Course> findCourseBySlug(String slug);
     Optional<Course> findFirstByIsFullCourseTrueOrderByIdDesc();
 
-    // ✅ Fix N+1 cho getAll(page,size)
+    // ✅ Fix N+1 cho getAll(page,size) - Lấy khóa học thường (loại bỏ Full Course)
+    @EntityGraph(attributePaths = {"author", "category"})
+    Page<Course> findByIsFullCourseFalseOrIsFullCourseIsNull(Pageable pageable);
+
     @Override
     @EntityGraph(attributePaths = {"author", "category"})
     Page<Course> findAll(Pageable pageable);

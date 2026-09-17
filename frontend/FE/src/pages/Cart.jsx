@@ -3,6 +3,7 @@ import { useNavigate } from 'react-router-dom';
 import { Link } from 'react-router-dom';
 import cartService from "../services/cartService";
 import orderService from "../services/orderService";
+import courseService from "../services/courseService";
 import './Cart.css';
 import Navbar from "../components/Navbar";
 import VoucherItem from "../components/VoucherItem";
@@ -30,14 +31,40 @@ function Cart() {
       const userId = user?.id;
       const isLoggedIn = user && userId;
 
-
+      let cartData = null;
       if (isLoggedIn) {
         const res = await cartService.getCart(userId);
-        setCart(res.data.data);
+        cartData = res.data?.data || res.data;
       } else {
         const res = await cartService.getCart();
-        setCart(res.data.data);
+        cartData = res.data?.data || res.data;
       }
+
+      // Sync Full Course price dynamically from DB if full course is in cart
+      try {
+        const fullCourseRes = await courseService.getFullCourse();
+        const fcData = fullCourseRes.data?.data || fullCourseRes.data;
+        if (fcData && cartData && Array.isArray(cartData.items)) {
+          const fcPrice = fcData.newPrice && Number(fcData.newPrice) > 0 ? Number(fcData.newPrice) : 599000;
+          let updated = false;
+          cartData.items = cartData.items.map(item => {
+            const isFc = item.isFullCourse || String(item.courseId) === '-1' || String(item.courseId) === '854' || 
+              (item.courseName && item.courseName.toLowerCase().includes('trọn bộ'));
+            if (isFc) {
+              updated = true;
+              return { ...item, price: fcPrice, isFullCourse: true };
+            }
+            return item;
+          });
+          if (updated) {
+            cartData.totalPrice = cartData.items.reduce((sum, i) => sum + (i.price || 0) * (i.quantity || 1), 0);
+          }
+        }
+      } catch (fcErr) {
+        // ignore if fc price fetch fails
+      }
+
+      setCart(cartData);
     } catch (err) {
       setError('Không thể tải giỏ hàng');
     } finally {

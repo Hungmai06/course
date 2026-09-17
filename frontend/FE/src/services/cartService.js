@@ -29,36 +29,35 @@ const calculateTotal = (items) => {
 
 const addToLocalCart = (courseData) => {
   const cart = getLocalCart();
-  const newCourseId = courseData.id;
+  const newCourseId = courseData.id || courseData.courseId;
+  const isFullCourse = Boolean(courseData.isFullCourse || String(newCourseId) === '-1' || String(newCourseId) === '854');
   const existingItemIndex = cart.items.findIndex(item => {
-    const isMatch = item.courseId === newCourseId;
-    return isMatch;
+    return String(item.courseId) === String(newCourseId) || 
+      (isFullCourse && (item.isFullCourse || String(item.courseId) === '-1' || String(item.courseId) === '854'));
   });
   
-  
-  
+  const freshPrice = courseData.newPrice || courseData.price || 0;
+
   if (existingItemIndex >= 0) {
-   
-  
     cart.items[existingItemIndex].quantity += 1;
-   
+    if (freshPrice > 0) cart.items[existingItemIndex].price = freshPrice;
+    if (courseData.name || courseData.courseName) cart.items[existingItemIndex].courseName = courseData.name || courseData.courseName;
+    cart.items[existingItemIndex].isFullCourse = isFullCourse;
   } else {
-  
-  
     const newItem = {
-      courseId: courseData.id,
-      courseName: courseData.name,
-      price: courseData.newPrice || courseData.price,
-      imageUrl: courseData.avatar || courseData.thumbnail,
-      avatar: courseData.avatar || courseData.thumbnail,
+      courseId: newCourseId,
+      courseName: courseData.name || courseData.courseName || '',
+      price: freshPrice,
+      imageUrl: courseData.avatar || courseData.thumbnail || '',
+      avatar: courseData.avatar || courseData.thumbnail || '',
       nameAuthor: courseData.nameAuthor || courseData.author || courseData.instructor || '',
       nameCategory: courseData.category || courseData.nameCategory || '',
       rating: courseData.rating || 4.5,
       ratingCount: courseData.ratingCount || 124,
       studentCount: courseData.studentCount || 1234,
-      quantity: 1
+      quantity: 1,
+      isFullCourse
     };
-   
     cart.items.push(newItem);
   }
   

@@ -32,16 +32,25 @@ export const saveLocalCart = (cart) => {
 export const addToLocalCart = (course) => {
   const cart = getLocalCart();
   const courseId = course.id || course.courseId;
-  const existing = cart.items.find(item => String(item.courseId) === String(courseId));
+  const isFullCourse = Boolean(course.isFullCourse || String(courseId) === '-1' || String(courseId) === '854');
+  const existing = cart.items.find(item => 
+    String(item.courseId) === String(courseId) || 
+    (isFullCourse && (item.isFullCourse || String(item.courseId) === '-1' || String(item.courseId) === '854'))
+  );
+  const freshPrice = course.newPrice || course.price || 0;
   if (existing) {
     existing.quantity = (existing.quantity || 0) + (course.quantity || 1);
+    if (freshPrice > 0) existing.price = freshPrice;
+    if (course.name || course.courseName) existing.courseName = course.name || course.courseName;
+    existing.isFullCourse = isFullCourse;
   } else {
     cart.items.push({
       courseId,
       courseName: course.name || course.courseName || '',
-      price: course.newPrice || course.price || 0,
+      price: freshPrice,
       imageUrl: course.avatar || course.thumbnail || '',
-      quantity: course.quantity || 1
+      quantity: course.quantity || 1,
+      isFullCourse
     });
   }
   cart.totalPrice = (cart.items || []).reduce((s, it) => s + (it.price || 0) * (it.quantity || 0), 0);

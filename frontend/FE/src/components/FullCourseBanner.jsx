@@ -87,21 +87,21 @@ const FullCourseBanner = () => {
             onError={(e) => { e.target.onerror = null; e.target.src = '/bn.png'; }}
           />
           <div className="banner-vip-badge-tag">
-            <FaCrown /> HOT DEAL 599K
+            <FaCrown /> HOT DEAL {formatPrice(fullCourse.newPrice)} đ
           </div>
         </div>
 
         {/* RIGHT 1/3 COLUMN: SLEEK ACTION PANEL */}
         <div className="banner-split-1third-panel">
           <div className="panel-top-badges">
-            <span className="panel-badge">🔥 CHỈ 599K / TRỌN ĐỜI</span>
+            <span className="panel-badge">🔥 CHỈ {formatPrice(fullCourse.newPrice)} đ / TRỌN ĐỜI</span>
             <span className="panel-sub-badge">⚡ VIP DEAL</span>
           </div>
           
           <h3 className="panel-title">{fullCourse.name}</h3>
 
           <ul className="panel-highlights">
-            <li><FaCheckCircle className="check-icon" /> 599K — Một lần đăng ký, truy cập toàn bộ Combo</li>
+            <li><FaCheckCircle className="check-icon" /> {formatPrice(fullCourse.newPrice)} đ — Một lần đăng ký, truy cập toàn bộ Combo</li>
             <li><FaCheckCircle className="check-icon" /> Học đa dạng chủ đề trên cùng một tài khoản</li>
             <li><FaCheckCircle className="check-icon" /> Không cần mua từng khóa học riêng lẻ</li>
             <li><FaCheckCircle className="check-icon" /> Cập nhật nội dung mới theo chính sách Combo</li>

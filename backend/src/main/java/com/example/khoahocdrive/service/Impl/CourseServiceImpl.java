@@ -407,7 +407,7 @@ public class CourseServiceImpl implements CourseService {
         FullCourseConfig config = getOrCreateConfig();
 
         Optional<Course> courseOpt = courseRepository.findCourseBySlug("full-course");
-        Long courseId = courseOpt.map(Course::getId).orElse(1L);
+        Long courseId = courseOpt.map(Course::getId).orElse(-1L);
 
         CourseResponse response = CourseResponse.builder()
                 .id(courseId)
@@ -484,7 +484,7 @@ public class CourseServiceImpl implements CourseService {
         config = fullCourseConfigRepository.saveAndFlush(config);
 
         Optional<Course> courseOpt = courseRepository.findCourseBySlug("full-course");
-        Long courseId = courseOpt.map(Course::getId).orElse(1L);
+        Long courseId = courseOpt.map(Course::getId).orElse(-1L);
 
         CourseResponse response = CourseResponse.builder()
                 .id(courseId)

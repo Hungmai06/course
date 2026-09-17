@@ -62,17 +62,15 @@ public class OrderServiceImpl implements OrderService {
 
         BigDecimal total = BigDecimal.ZERO;
         for (Long cId : request.getCourseIds()) {
+            boolean isFullCourseId = (cId != null && (cId.equals(-1L) || cId.equals(854L)));
             Optional<Course> cOpt = courses.stream().filter(c -> c.getId().equals(cId)).findFirst();
-            if (cOpt.isPresent()) {
-                Course c = cOpt.get();
-                if (Boolean.TRUE.equals(c.getIsFullCourse()) || "full-course".equalsIgnoreCase(c.getSlug())) {
-                    BigDecimal fullPrice = (fullCourseConfig != null && fullCourseConfig.getNewPrice() != null)
-                            ? fullCourseConfig.getNewPrice()
-                            : (c.getNewPrice() != null ? c.getNewPrice() : new BigDecimal("599000"));
-                    total = total.add(fullPrice);
-                } else {
-                    total = total.add(c.getNewPrice() != null ? c.getNewPrice() : BigDecimal.ZERO);
-                }
+            if (isFullCourseId || (cOpt.isPresent() && (Boolean.TRUE.equals(cOpt.get().getIsFullCourse()) || "full-course".equalsIgnoreCase(cOpt.get().getSlug())))) {
+                BigDecimal fullPrice = (fullCourseConfig != null && fullCourseConfig.getNewPrice() != null)
+                        ? fullCourseConfig.getNewPrice()
+                        : (cOpt.isPresent() && cOpt.get().getNewPrice() != null ? cOpt.get().getNewPrice() : new BigDecimal("599000"));
+                total = total.add(fullPrice);
+            } else if (cOpt.isPresent()) {
+                total = total.add(cOpt.get().getNewPrice() != null ? cOpt.get().getNewPrice() : BigDecimal.ZERO);
             } else if (fullCourseConfig != null) {
                 total = total.add(fullCourseConfig.getNewPrice() != null ? fullCourseConfig.getNewPrice() : new BigDecimal("599000"));
             }

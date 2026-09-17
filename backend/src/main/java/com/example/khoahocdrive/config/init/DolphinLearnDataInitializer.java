@@ -84,10 +84,23 @@ public class DolphinLearnDataInitializer {
             docCatRepo.save(DocumentCategory.builder().name("Thiết kế").icon("language_chinese_quick").build());
             log.info("Seeded category: Thiết kế");
         }
-        if (!docCatRepo.existsByName("Marketing")) {
-            docCatRepo.save(DocumentCategory.builder().name("Marketing").icon("language_chinese_quick").build());
-            log.info("Seeded category: Marketing");
-        }
+        List<DocumentCategory> categories = docCatRepo.findAll()
+        .stream()
+        .filter(c -> "Thiết kế".equals(c.getName()))
+        .toList();
+
+if (categories.isEmpty()) {
+    docCatRepo.save(
+        DocumentCategory.builder()
+            .name("Thiết kế")
+            .icon("language_chinese_quick")
+            .build()
+    );
+} else if (categories.size() > 1) {
+    DocumentCategory keep = categories.get(0);
+    categories.remove(keep);
+    docCatRepo.deleteAll(categories);
+}
         if (!docCatRepo.existsByName("Lập Trình")) {
             docCatRepo.save(DocumentCategory.builder().name("Lập Trình").icon("language_chinese_quick").build());
             log.info("Seeded category: Lập Trình");

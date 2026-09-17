@@ -484,6 +484,21 @@ public class CourseServiceImpl implements CourseService {
         config = fullCourseConfigRepository.saveAndFlush(config);
 
         Optional<Course> courseOpt = courseRepository.findCourseBySlug("full-course");
+        if (courseOpt.isPresent()) {
+            Course c = courseOpt.get();
+            if (config.getNewPrice() != null) c.setNewPrice(config.getNewPrice());
+            if (config.getOldPrice() != null) c.setOldPrice(config.getOldPrice());
+            if (config.getName() != null) c.setName(config.getName());
+            if (config.getDescription() != null) c.setDescription(config.getDescription());
+            if (config.getAvatar() != null) c.setAvatar(config.getAvatar());
+            if (config.getLinkDrive() != null) c.setLinkDrive(config.getLinkDrive());
+            if (config.getLinkDrive2() != null) c.setLinkDrive2(config.getLinkDrive2());
+            if (config.getLinkTest() != null) c.setLinkTest(config.getLinkTest());
+            if (config.getLinkTest2() != null) c.setLinkTest2(config.getLinkTest2());
+            if (config.getIsFullCourse() != null) c.setIsFullCourse(config.getIsFullCourse());
+            courseRepository.saveAndFlush(c);
+        }
+
         Long courseId = courseOpt.map(Course::getId).orElse(-1L);
 
         CourseResponse response = CourseResponse.builder()

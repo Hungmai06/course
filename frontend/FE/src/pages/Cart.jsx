@@ -45,7 +45,7 @@ function Cart() {
         const fullCourseRes = await courseService.getFullCourse();
         const fcData = fullCourseRes.data?.data || fullCourseRes.data;
         if (fcData && cartData && Array.isArray(cartData.items)) {
-          const fcPrice = fcData.newPrice && Number(fcData.newPrice) > 0 ? Number(fcData.newPrice) : 599000;
+          const fcPrice = (fcData.newPrice !== undefined && fcData.newPrice !== null) ? Number(fcData.newPrice) : 0;
           let updated = false;
           cartData.items = cartData.items.map(item => {
             const isFc = item.isFullCourse || String(item.courseId) === '-1' || String(item.courseId) === '854' || 

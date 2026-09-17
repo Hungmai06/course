@@ -23,8 +23,8 @@ const FullCourseDetail = () => {
         if (data) {
           setCourse({
             ...data,
-            oldPrice: data.oldPrice && Number(data.oldPrice) > 0 ? Number(data.oldPrice) : 100000000,
-            newPrice: data.newPrice && Number(data.newPrice) > 0 ? Number(data.newPrice) : 599000,
+            oldPrice: (data.oldPrice !== undefined && data.oldPrice !== null) ? Number(data.oldPrice) : 100000000,
+            newPrice: (data.newPrice !== undefined && data.newPrice !== null) ? Number(data.newPrice) : 0,
             linkDrive: data.linkDrive || '',
             linkDrive2: data.linkDrive2 || '',
             linkTest: data.linkTest || '',

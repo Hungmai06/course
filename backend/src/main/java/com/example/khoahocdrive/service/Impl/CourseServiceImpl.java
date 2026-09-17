@@ -266,10 +266,6 @@ public class CourseServiceImpl implements CourseService {
         Course course = courseRepository.findById(id)
                 .orElseThrow(() -> new ResourceNotFoundException("Course not found with id: " + id));
 
-        if (Boolean.TRUE.equals(course.getIsFullCourse()) || "full-course".equalsIgnoreCase(course.getSlug())) {
-            throw new InvalidDataException("Không thể xóa Gói Full Khóa Học mặc định của hệ thống!");
-        }
-
         // 1. Xóa OrderDetail liên quan trước để tránh lỗi Foreign Key Constraint
         List<OrderDetail> relatedDetails = orderDetailRepository.findByCourseId(id);
         if (relatedDetails != null && !relatedDetails.isEmpty()) {
@@ -405,61 +401,16 @@ public class CourseServiceImpl implements CourseService {
         return fullCourseConfigRepository.saveAndFlush(config);
     }
 
-    private Course getOrCreateFullCourseEntity(FullCourseConfig config) {
-        Optional<Course> courseOpt = courseRepository.findCourseBySlug("full-course");
-        if (courseOpt.isEmpty()) {
-            courseOpt = courseRepository.findFirstByIsFullCourseTrueOrderByIdDesc();
-        }
-        Course course;
-        String avatarToUse = (config.getAvatar() != null && !config.getAvatar().isBlank())
-                ? config.getAvatar()
-                : "/bn.png";
-
-        if (courseOpt.isPresent()) {
-            course = courseOpt.get();
-        } else {
-            Author author = authorRepository.findAll().stream().findFirst().orElse(null);
-            Category category = categoryRepository.findAll().stream().findFirst().orElse(null);
-            course = Course.builder()
-                .name(config.getName() != null ? config.getName() : "Trọn Bộ Full Tất Cả Khóa Học Drive MH")
-                .description(config.getDescription())
-                .oldPrice(config.getOldPrice() != null ? config.getOldPrice() : new java.math.BigDecimal("100000000"))
-                .newPrice(config.getNewPrice() != null ? config.getNewPrice() : new java.math.BigDecimal("599000"))
-                .avatar(avatarToUse)
-                .linkDrive(config.getLinkDrive())
-                .linkDrive2(config.getLinkDrive2())
-                .linkTest(config.getLinkTest())
-                .linkTest2(config.getLinkTest2())
-                .isFullCourse(true)
-                .slug("full-course")
-                .author(author)
-                .category(category)
-                .build();
-        }
-
-        course.setName(config.getName() != null ? config.getName() : "Trọn Bộ Full Tất Cả Khóa Học Drive MH");
-        course.setDescription(config.getDescription());
-        course.setOldPrice(config.getOldPrice() != null ? config.getOldPrice() : new java.math.BigDecimal("100000000"));
-        course.setNewPrice(config.getNewPrice() != null ? config.getNewPrice() : new java.math.BigDecimal("599000"));
-        course.setAvatar(avatarToUse);
-        course.setLinkDrive(config.getLinkDrive());
-        course.setLinkDrive2(config.getLinkDrive2());
-        course.setLinkTest(config.getLinkTest());
-        course.setLinkTest2(config.getLinkTest2());
-        course.setIsFullCourse(true);
-        course.setSlug("full-course");
-
-        return courseRepository.saveAndFlush(course);
-    }
-
     @Override
     @Transactional
     public ApiResponse<CourseResponse> getFullCourse() {
         FullCourseConfig config = getOrCreateConfig();
-        Course courseEntity = getOrCreateFullCourseEntity(config);
+
+        Optional<Course> courseOpt = courseRepository.findCourseBySlug("full-course");
+        Long courseId = courseOpt.map(Course::getId).orElse(1L);
 
         CourseResponse response = CourseResponse.builder()
-                .id(courseEntity.getId())
+                .id(courseId)
                 .name(config.getName())
                 .description(config.getDescription())
                 .oldPrice(config.getOldPrice())
@@ -531,10 +482,12 @@ public class CourseServiceImpl implements CourseService {
         }
 
         config = fullCourseConfigRepository.saveAndFlush(config);
-        Course courseEntity = getOrCreateFullCourseEntity(config);
+
+        Optional<Course> courseOpt = courseRepository.findCourseBySlug("full-course");
+        Long courseId = courseOpt.map(Course::getId).orElse(1L);
 
         CourseResponse response = CourseResponse.builder()
-                .id(courseEntity.getId())
+                .id(courseId)
                 .name(config.getName())
                 .description(config.getDescription())
                 .oldPrice(config.getOldPrice())

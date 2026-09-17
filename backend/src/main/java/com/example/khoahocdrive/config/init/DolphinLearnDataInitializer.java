@@ -80,27 +80,19 @@ public class DolphinLearnDataInitializer {
             docCatRepo.save(DocumentCategory.builder().name("Tiếng Trung").icon("language_chinese_quick").build());
             log.info("Seeded category: Tiếng Trung");
         }
-        if (!docCatRepo.existsByName("Thiết Kế")) {
-            docCatRepo.save(DocumentCategory.builder().name("Thiết kế").icon("language_chinese_quick").build());
-            log.info("Seeded category: Thiết kế");
-        }
-        List<DocumentCategory> categories = docCatRepo.findAll()
-        .stream()
-        .filter(c -> "Thiết kế".equals(c.getName()))
-        .toList();
+        List<DocumentCategory> thietKeCats = docCatRepo.findAll().stream()
+                .filter(c -> c.getName() != null && ("Thiết kế".equalsIgnoreCase(c.getName()) || "Thiết Kế".equalsIgnoreCase(c.getName())))
+                .collect(java.util.stream.Collectors.toList());
 
-if (categories.isEmpty()) {
-    docCatRepo.save(
-        DocumentCategory.builder()
-            .name("Thiết kế")
-            .icon("language_chinese_quick")
-            .build()
-    );
-} else if (categories.size() > 1) {
-    DocumentCategory keep = categories.get(0);
-    categories.remove(keep);
-    docCatRepo.deleteAll(categories);
-}
+        if (thietKeCats.isEmpty()) {
+            docCatRepo.save(DocumentCategory.builder().name("Thiết Kế").icon("language_chinese_quick").build());
+            log.info("Seeded category: Thiết Kế");
+        } else if (thietKeCats.size() > 1) {
+            List<DocumentCategory> duplicates = new ArrayList<>(thietKeCats);
+            duplicates.remove(0);
+            docCatRepo.deleteAll(duplicates);
+            log.info("Cleaned up duplicate Thiết Kế categories");
+        }
         if (!docCatRepo.existsByName("Lập Trình")) {
             docCatRepo.save(DocumentCategory.builder().name("Lập Trình").icon("language_chinese_quick").build());
             log.info("Seeded category: Lập Trình");

@@ -49,24 +49,44 @@ public class OrderServiceImpl implements OrderService {
     private final EmailServiceImpl emailService;
     private final GoogleDriveService googleDriveService;
     private final CartService cartService;
+    private final FullCourseConfigRepository fullCourseConfigRepository;
+
     @Override
     public ApiResponse<OrderResponse> create(OrderRequest request) {
-
-        List<Course> courses = courseRepository.findAllById(request.getCourseIds());
-        if (courses.isEmpty()) {
-            throw new ResourceNotFoundException("Course not choose");
+        if (request.getCourseIds() == null || request.getCourseIds().isEmpty()) {
+            throw new ResourceNotFoundException("Vui lòng chọn khóa học để thanh toán");
         }
 
-        BigDecimal total = courses.stream()
-                .map(Course::getNewPrice)
-                .filter(Objects::nonNull)
-                .reduce(BigDecimal.ZERO, BigDecimal::add);
+        FullCourseConfig fullCourseConfig = fullCourseConfigRepository.findById(1L).orElse(null);
+        List<Course> courses = courseRepository.findAllById(request.getCourseIds());
+
+        BigDecimal total = BigDecimal.ZERO;
+        for (Long cId : request.getCourseIds()) {
+            Optional<Course> cOpt = courses.stream().filter(c -> c.getId().equals(cId)).findFirst();
+            if (cOpt.isPresent()) {
+                Course c = cOpt.get();
+                if (Boolean.TRUE.equals(c.getIsFullCourse()) || "full-course".equalsIgnoreCase(c.getSlug())) {
+                    BigDecimal fullPrice = (fullCourseConfig != null && fullCourseConfig.getNewPrice() != null)
+                            ? fullCourseConfig.getNewPrice()
+                            : (c.getNewPrice() != null ? c.getNewPrice() : new BigDecimal("599000"));
+                    total = total.add(fullPrice);
+                } else {
+                    total = total.add(c.getNewPrice() != null ? c.getNewPrice() : BigDecimal.ZERO);
+                }
+            } else if (fullCourseConfig != null) {
+                total = total.add(fullCourseConfig.getNewPrice() != null ? fullCourseConfig.getNewPrice() : new BigDecimal("599000"));
+            }
+        }
+
+        if (total.compareTo(BigDecimal.ZERO) <= 0 && courses.isEmpty() && fullCourseConfig == null) {
+            throw new ResourceNotFoundException("Khóa học không hợp lệ");
+        }
 
         BigDecimal discountPrice = BigDecimal.ZERO;
         DiscountCode discountCode = null;
 
         if (request.getCouponCode() != null && !request.getCouponCode().isBlank()) {
-            discountCode = discountCodeRepository.findDiscountCodeByCode(request.getCouponCode())
+            discountCode = discountCodeRepository.findDiscountCodeByCode(request.getCouponCode().trim())
                     .orElseThrow(() -> new ResourceNotFoundException("Mã giảm giá không tồn tại"));
 
             if (discountCode.getStartDate().after(new Date())) {
@@ -76,7 +96,7 @@ public class OrderServiceImpl implements OrderService {
                 throw new ResourceNotFoundException("Mã giảm giá đã hết hạn");
             }
             if (total.compareTo(discountCode.getMinimumOrder()) < 0) {
-                throw new ResourceNotFoundException("Đơn hàng có giá trị nhỏ hơn mức được áp dụng");
+                throw new ResourceNotFoundException("Đơn hàng chưa đạt giá trị tối thiểu để áp dụng mã này");
             }
 
             discountPrice = total.multiply(discountCode.getDiscountPercent())
@@ -84,6 +104,9 @@ public class OrderServiceImpl implements OrderService {
         }
 
         BigDecimal finalAmount = total.subtract(discountPrice);
+        if (finalAmount.compareTo(BigDecimal.ZERO) < 0) {
+            finalAmount = BigDecimal.ZERO;
+        }
 
         User user = null;
         if (request.getUserId() != null) {
@@ -103,13 +126,25 @@ public class OrderServiceImpl implements OrderService {
                 .build();
 
         List<OrderDetail> orderDetails = new ArrayList<>();
-        for (Course course : courses) {
-            OrderDetail orderDetail = OrderDetail.builder()
-                    .order(order)
-                    .quantity(1)
-                    .course(course)
-                    .build();
-            orderDetails.add(orderDetail);
+        if (!courses.isEmpty()) {
+            for (Course course : courses) {
+                OrderDetail orderDetail = OrderDetail.builder()
+                        .order(order)
+                        .quantity(1)
+                        .course(course)
+                        .build();
+                orderDetails.add(orderDetail);
+            }
+        } else {
+            Course fcEntity = courseRepository.findCourseBySlug("full-course").orElse(null);
+            if (fcEntity != null) {
+                OrderDetail orderDetail = OrderDetail.builder()
+                        .order(order)
+                        .quantity(1)
+                        .course(fcEntity)
+                        .build();
+                orderDetails.add(orderDetail);
+            }
         }
 
         order.setOrderDetails(orderDetails);
@@ -117,7 +152,7 @@ public class OrderServiceImpl implements OrderService {
 
         return ApiResponse.<OrderResponse>builder()
                 .data(toResponse(order))
-                .message("Create order")
+                .message("Create order successfully")
                 .build();
     }
 

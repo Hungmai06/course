@@ -123,7 +123,7 @@ const FullCourseBanner = () => {
           <div className="panel-actions-group">
             {/* 1. PRIMARY CTA */}
             <button className="panel-btn btn-primary-buy" onClick={handleBuyNow}>
-              <FaCreditCard /> MUA NGAY 599K
+              <FaCreditCard /> MUA NGAY {formatPrice(fullCourse.newPrice)} đ
             </button>
 
             {/* 2. SECONDARY ACTIONS GRID */}

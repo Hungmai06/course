@@ -88,6 +88,7 @@ const FullCourseAdmin = () => {
 
       const updated = res.data?.data || res.data;
 
+      courseService.clearCache();
       message.success('🎉 Cập nhật cài đặt Link & Nội dung Full Khóa Học thành công!');
 
       if (updated) {
@@ -109,7 +110,8 @@ const FullCourseAdmin = () => {
       setFileList([]);
     } catch (err) {
       console.error('Lỗi khi cập nhật Full Khóa Học:', err);
-      message.error('Cập nhật thất bại. Vui lòng thử lại!');
+      const serverError = err.response?.data?.message || err.message;
+      message.error(`Cập nhật thất bại: ${serverError}`);
     } finally {
       setSubmitting(false);
     }

@@ -125,6 +125,10 @@ public class CourseServiceImpl implements CourseService {
                 ()->new ResourceNotFoundException("Course not found")
         );
 
+        if (Boolean.TRUE.equals(course.getIsFullCourse()) || "full-course".equalsIgnoreCase(course.getSlug())) {
+            return updateFullCourse(file, request);
+        }
+
         if(file != null && !file.isEmpty()){
             String newImageUrl = cloudinaryService.uploadImage(file);
             course.setAvatar(newImageUrl);
@@ -399,17 +403,21 @@ public class CourseServiceImpl implements CourseService {
             courseOpt = courseRepository.findFirstByIsFullCourseTrueOrderByIdDesc();
         }
         Course course;
+        String avatarToUse = (config.getAvatar() != null && !config.getAvatar().isBlank())
+                ? config.getAvatar()
+                : "/bn.png";
+
         if (courseOpt.isPresent()) {
             course = courseOpt.get();
         } else {
             Author author = authorRepository.findAll().stream().findFirst().orElse(null);
             Category category = categoryRepository.findAll().stream().findFirst().orElse(null);
             course = Course.builder()
-                .name(config.getName())
+                .name(config.getName() != null ? config.getName() : "Trọn Bộ Full Tất Cả Khóa Học Drive MH")
                 .description(config.getDescription())
-                .oldPrice(config.getOldPrice())
-                .newPrice(config.getNewPrice())
-                .avatar(config.getAvatar())
+                .oldPrice(config.getOldPrice() != null ? config.getOldPrice() : new java.math.BigDecimal("100000000"))
+                .newPrice(config.getNewPrice() != null ? config.getNewPrice() : new java.math.BigDecimal("599000"))
+                .avatar(avatarToUse)
                 .linkDrive(config.getLinkDrive())
                 .linkDrive2(config.getLinkDrive2())
                 .linkTest(config.getLinkTest())
@@ -421,13 +429,11 @@ public class CourseServiceImpl implements CourseService {
                 .build();
         }
 
-        course.setName(config.getName());
+        course.setName(config.getName() != null ? config.getName() : "Trọn Bộ Full Tất Cả Khóa Học Drive MH");
         course.setDescription(config.getDescription());
-        course.setOldPrice(config.getOldPrice());
-        course.setNewPrice(config.getNewPrice());
-        if (config.getAvatar() != null && !config.getAvatar().isBlank()) {
-            course.setAvatar(config.getAvatar());
-        }
+        course.setOldPrice(config.getOldPrice() != null ? config.getOldPrice() : new java.math.BigDecimal("100000000"));
+        course.setNewPrice(config.getNewPrice() != null ? config.getNewPrice() : new java.math.BigDecimal("599000"));
+        course.setAvatar(avatarToUse);
         course.setLinkDrive(config.getLinkDrive());
         course.setLinkDrive2(config.getLinkDrive2());
         course.setLinkTest(config.getLinkTest());
@@ -471,8 +477,14 @@ public class CourseServiceImpl implements CourseService {
         FullCourseConfig config = getOrCreateConfig();
 
         if (file != null && !file.isEmpty()) {
-            String fileUrl = cloudinaryService.uploadImage(file);
-            config.setAvatar(fileUrl);
+            try {
+                String fileUrl = cloudinaryService.uploadImage(file);
+                if (fileUrl != null && !fileUrl.isBlank()) {
+                    config.setAvatar(fileUrl);
+                }
+            } catch (Exception e) {
+                System.err.println("Upload avatar image failed: " + e.getMessage());
+            }
         }
 
         if (request != null) {
